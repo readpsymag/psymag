@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics="">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#FFFFFF;color:#0A0A0A;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#0A0A0A;text-decoration:none}
+a:hover{color:#FF5757}
+input,textarea,button{font-family:inherit}
+::selection{background:#FF5757;color:#FFFFFF}
+@keyframes psyfade{from{opacity:0}to{opacity:1}}
+@keyframes psyrise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes psybob{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+@keyframes psymarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes psyletter{from{transform:translateY(105%)}to{transform:translateY(0)}}
+@keyframes psyletter2{from{transform:translateY(105%)}to{transform:translateY(0)}}
+</style>
+</helmet>
+
+<div style="background:#FFFFFF;font-family:Outfit,sans-serif;overflow-x:hidden;position:relative">
+
+
+
+
+
+<header style="{{ headerStyle }}">
+  
+</header>
+
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:150;background:#0A0A0A;padding:40px;display:flex;flex-direction:column;animation:psyfade .28s ease-out">
+    <div style="display:flex;justify-content:flex-end">
+      <div onClick="{{ closeMenu }}" style="cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font:200 40px/1 Outfit,sans-serif;color:#FFFFFF;transition:color .2s" style-hover="color:#FF5757">×</div>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:60px;align-content:center;padding:0 60px;max-width:1600px;margin:0 auto;width:100%">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span style="font:600 clamp(30px,3.4vw,52px)/1.25 Outfit,sans-serif;letter-spacing:-.02em;color:#FFFFFF;padding-bottom:14px">sections</span>
+        <sc-for list="{{ menuLeft }}" as="m" hint-placeholder-count="7">
+          <span onClick="{{ closeMenu }}" style="cursor:pointer;font:300 clamp(18px,1.5vw,25px)/1.85 Outfit,sans-serif;color:#FFFFFF;transition:color .18s,padding-left .18s" style-hover="color:#38B6FF;padding-left:10px">{{ m }}</span>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <sc-for list="{{ menuRight }}" as="m" hint-placeholder-count="6">
+          <span onClick="{{ closeMenu }}" style="cursor:pointer;font:600 clamp(28px,3.2vw,50px)/1.2 Outfit,sans-serif;letter-spacing:-.02em;color:#FFFFFF;transition:color .18s,padding-left .2s" style-hover="color:#FF5757;padding-left:14px">{{ m }}</span>
+        </sc-for>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.28);padding-top:26px;display:flex;align-items:center;justify-content:center;gap:44px;flex-wrap:wrap">
+      <sc-for list="{{ socials }}" as="s" hint-placeholder-count="6">
+        <a href="{{ s.url }}" target="_blank" style="font:300 17px/1 Outfit,sans-serif;color:#FFFFFF;transition:color .18s" style-hover="color:#38B6FF">{{ s.lower }}</a>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+<section style="padding:100px 40px 30px;display:flex;flex-direction:column;justify-content:flex-start;max-width:1600px;margin:0 auto">
+  <h1 style="margin:0;display:flex;flex-direction:column;align-items:center;gap:0">
+    <sc-for list="{{ headlineLines }}" as="line" hint-placeholder-count="2">
+      <span style="display:flex;flex-wrap:nowrap;padding-bottom:.12em;width:fit-content;max-width:100%;color:#0A0A0A;cursor:default">
+        <sc-for list="{{ line.letters }}" as="l" hint-placeholder-count="10">
+          <span style="display:inline-block;overflow:hidden;padding-top:.14em;margin-top:-.14em;padding-left:.12em;margin-left:-.12em;padding-right:.14em;margin-right:-.14em">
+            <span style="display:inline-block;transform:translateY(105%);animation:{{ animName }} .9s cubic-bezier(.22,1,.36,1) {{ l.delay }} both">
+              <span data-hue="{{ l.hoverColor }}" data-base="{{ l.base }}" onMouseEnter="{{ letterOn }}" onMouseLeave="{{ letterOff }}" style="display:inline-block;font:600 clamp(46px,10.4vw,164px)/.94 Outfit,sans-serif;letter-spacing:-.045em;color:{{ l.base }};-webkit-text-stroke:{{ l.stroke }};transition:transform .3s cubic-bezier(.22,1,.36,1),color .16s" style-hover="transform:translateY(-12%)">{{ l.ch }}</span>
+            </span>
+          </span>
+        </sc-for>
+      </span>
+    </sc-for>
+  </h1>
+
+  <div style="position:relative;margin-top:6px;height:clamp(320px,46vh,540px);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%)">
+    <canvas id="psyfilm" style="position:absolute;inset:0;width:100%;height:100%;display:block"></canvas>
+  </div>
+
+</section>
+
+<section id="lost-letters" style="padding:40px 0 120px">
+  <div id="psydot" style="position: fixed; top: -8px; left: -10px; width: 14px; height: 14px; border-radius: 50%; background: #0A0A0A; z-index: 200; pointer-events: none; opacity: 0; transition: opacity .3s; will-change: transform; transform: translate(-20px,-20px)"></div>
+  <div style="max-width:1600px;margin:0 auto;padding:0 40px 52px;display:flex;flex-direction:column;gap:16px">
+    <h2 style="margin:0;font:600 clamp(34px,5.4vw,86px)/.94 Outfit,sans-serif;letter-spacing:-.045em;color:#0A0A0A">human archive</h2>
+    <span style="font:300 clamp(17px,1.35vw,21px)/1.6 Outfit,sans-serif;color:#2A2A2A;max-width:52ch;text-wrap:pretty">notes people wrote and never sent, kept exactly as they arrived. some of these are hard to read. that is the point.</span>
+  </div>
+  <div style="overflow:hidden;padding:26px 0">
+    <div style="display:flex;width:max-content;gap:26px;animation:psymarquee 62s linear infinite">
+      <sc-for list="{{ chitsLoop }}" as="c" hint-placeholder-count="8">
+        <div style="width:372px;flex:none;background:#FFFFFF;border:1.5px solid #0A0A0A;min-height:250px;display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease" style-hover="transform:translateY(-10px);box-shadow:10px 10px 0 0 #0A0A0A">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:#0A0A0A;padding:11px 18px">
+            <span style="font:600 12px/1 Outfit,sans-serif;letter-spacing:.16em;color:#FFFFFF">anonymous</span>
+            <span style="display:block;width:9px;height:9px;background:{{ c.hue }}"></span>
+          </div>
+          <div style="flex:1;display:flex;align-items:flex-start;padding:30px 26px 34px">
+            <span style="font:300 clamp(17px,1.35vw,21px)/1.5 Outfit,sans-serif;color:#0A0A0A;text-wrap:pretty">{{ c.text }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="position:relative;margin-top:96px;height:clamp(340px,52vh,560px);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%)">
+    <canvas id="psyarchive" style="position:absolute;inset:0;width:100%;height:100%;display:block"></canvas>
+  </div>
+
+  <div style="display:flex;justify-content:center;align-items:center;gap:20px;padding:70px 40px 0;flex-wrap:wrap">
+    <a href="https://instagram.com/readpsymag" target="_blank" rel="noopener" aria-label="Instagram" style="width:58px;height:58px;border-radius:50%;border:1.5px solid #0A0A0A;background:#FFFFFF;color:#0A0A0A;display:flex;align-items:center;justify-content:center;transition:background .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1)" style-hover="background:#38B6FF;color:#FFFFFF;transform:translateY(-4px)">
+      <span style="width:24px;height:24px;display:block;background:currentColor;-webkit-mask:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228%201.3877-.6652.6677-1.075%201.3368-1.3802%202.127-.2954.7638-.4956%201.6365-.552%202.914-.0564%201.2775-.0689%201.6882-.0626%204.947.0062%203.2586.0206%203.6671.0825%204.9473.061%201.2765.264%202.1482.5635%202.9107.308.7889.72%201.4573%201.388%202.1228.6679.6655%201.3365%201.0743%202.1285%201.38.7632.295%201.6361.4961%202.9134.552%201.2773.056%201.6884.069%204.9462.0627%203.2578-.0062%203.668-.0207%204.9478-.0814%201.28-.0607%202.147-.2652%202.9098-.5633.7889-.3086%201.4578-.72%202.1228-1.3881.665-.6682%201.0745-1.3378%201.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982%201.33%2020.628.9208%2019.8378.6165%2019.074.321%2018.2017.1197%2016.9244.0645%2015.6471.0093%2015.236-.005%2011.977.0014%208.718.0076%208.31.0215%207.0301.0839m.1402%2021.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814%201.3783-.9003.423-.1651%201.0575-.3614%202.227-.4171%201.2655-.06%201.6447-.072%204.848-.079%203.2033-.007%203.5835.005%204.8495.0608%201.169.0508%201.8053.2445%202.228.408.5608.216.96.4754%201.3816.895.4217.4194.6816.8176.9005%201.3787.1653.4217.3617%201.056.4169%202.2263.0602%201.2655.0739%201.645.0796%204.848.0058%203.203-.0055%203.5834-.061%204.848-.051%201.17-.245%201.8055-.408%202.2294-.216.5604-.4763.96-.8954%201.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953%205.5864A1.44%201.44%200%201%200%2018.39%204.144a1.44%201.44%200%200%200-1.437%201.4424M5.8385%2012.012c.0067%203.4032%202.7706%206.1557%206.173%206.1493%203.4026-.0065%206.157-2.7701%206.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156%202.771-6.1496%206.1738M8%2012.0077a4%204%200%201%201%204.008%203.9921A3.9996%203.9996%200%200%201%208%2012.0077%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat;mask:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228%201.3877-.6652.6677-1.075%201.3368-1.3802%202.127-.2954.7638-.4956%201.6365-.552%202.914-.0564%201.2775-.0689%201.6882-.0626%204.947.0062%203.2586.0206%203.6671.0825%204.9473.061%201.2765.264%202.1482.5635%202.9107.308.7889.72%201.4573%201.388%202.1228.6679.6655%201.3365%201.0743%202.1285%201.38.7632.295%201.6361.4961%202.9134.552%201.2773.056%201.6884.069%204.9462.0627%203.2578-.0062%203.668-.0207%204.9478-.0814%201.28-.0607%202.147-.2652%202.9098-.5633.7889-.3086%201.4578-.72%202.1228-1.3881.665-.6682%201.0745-1.3378%201.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982%201.33%2020.628.9208%2019.8378.6165%2019.074.321%2018.2017.1197%2016.9244.0645%2015.6471.0093%2015.236-.005%2011.977.0014%208.718.0076%208.31.0215%207.0301.0839m.1402%2021.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814%201.3783-.9003.423-.1651%201.0575-.3614%202.227-.4171%201.2655-.06%201.6447-.072%204.848-.079%203.2033-.007%203.5835.005%204.8495.0608%201.169.0508%201.8053.2445%202.228.408.5608.216.96.4754%201.3816.895.4217.4194.6816.8176.9005%201.3787.1653.4217.3617%201.056.4169%202.2263.0602%201.2655.0739%201.645.0796%204.848.0058%203.203-.0055%203.5834-.061%204.848-.051%201.17-.245%201.8055-.408%202.2294-.216.5604-.4763.96-.8954%201.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953%205.5864A1.44%201.44%200%201%200%2018.39%204.144a1.44%201.44%200%200%200-1.437%201.4424M5.8385%2012.012c.0067%203.4032%202.7706%206.1557%206.173%206.1493%203.4026-.0065%206.157-2.7701%206.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156%202.771-6.1496%206.1738M8%2012.0077a4%204%200%201%201%204.008%203.9921A3.9996%203.9996%200%200%201%208%2012.0077%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat"></span>
+    </a>
+    <a href="https://discord.gg/readpsymag" target="_blank" rel="noopener" aria-label="Discord" style="width:58px;height:58px;border-radius:50%;border:1.5px solid #0A0A0A;background:#FFFFFF;color:#0A0A0A;display:flex;align-items:center;justify-content:center;transition:background .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1)" style-hover="background:#38B6FF;color:#FFFFFF;transform:translateY(-4px)">
+      <span style="width:25px;height:25px;display:block;background:currentColor;-webkit-mask:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M20.317%204.3698a19.7913%2019.7913%200%2000-4.8851-1.5152.0741.0741%200%2000-.0785.0371c-.211.3753-.4447.8648-.6083%201.2495-1.8447-.2762-3.68-.2762-5.4868%200-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077%200%2000-.0785-.037%2019.7363%2019.7363%200%2000-4.8852%201.515.0699.0699%200%2000-.0321.0277C.5334%209.0458-.319%2013.5799.0992%2018.0578a.0824.0824%200%2000.0312.0561c2.0528%201.5076%204.0413%202.4228%205.9929%203.0294a.0777.0777%200%2000.0842-.0276c.4616-.6304.8731-1.2952%201.226-1.9942a.076.076%200%2000-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077%200%2001-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743%200%2001.0776-.0105c3.9278%201.7933%208.18%201.7933%2012.0614%200a.0739.0739%200%2001.0785.0095c.1202.099.246.1981.3728.2924a.077.077%200%2001-.0066.1276%2012.2986%2012.2986%200%2001-1.873.8914.0766.0766%200%2000-.0407.1067c.3604.698.7719%201.3628%201.225%201.9932a.076.076%200%2000.0842.0286c1.961-.6067%203.9495-1.5219%206.0023-3.0294a.077.077%200%2000.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061%200%2000-.0312-.0286zM8.02%2015.3312c-1.1825%200-2.1569-1.0857-2.1569-2.419%200-1.3332.9555-2.4189%202.157-2.4189%201.2108%200%202.1757%201.0952%202.1568%202.419%200%201.3332-.9555%202.4189-2.1569%202.4189zm7.9748%200c-1.1825%200-2.1569-1.0857-2.1569-2.419%200-1.3332.9554-2.4189%202.1569-2.4189%201.2108%200%202.1757%201.0952%202.1568%202.419%200%201.3332-.946%202.4189-2.1568%202.4189Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat;mask:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M20.317%204.3698a19.7913%2019.7913%200%2000-4.8851-1.5152.0741.0741%200%2000-.0785.0371c-.211.3753-.4447.8648-.6083%201.2495-1.8447-.2762-3.68-.2762-5.4868%200-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077%200%2000-.0785-.037%2019.7363%2019.7363%200%2000-4.8852%201.515.0699.0699%200%2000-.0321.0277C.5334%209.0458-.319%2013.5799.0992%2018.0578a.0824.0824%200%2000.0312.0561c2.0528%201.5076%204.0413%202.4228%205.9929%203.0294a.0777.0777%200%2000.0842-.0276c.4616-.6304.8731-1.2952%201.226-1.9942a.076.076%200%2000-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077%200%2001-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743%200%2001.0776-.0105c3.9278%201.7933%208.18%201.7933%2012.0614%200a.0739.0739%200%2001.0785.0095c.1202.099.246.1981.3728.2924a.077.077%200%2001-.0066.1276%2012.2986%2012.2986%200%2001-1.873.8914.0766.0766%200%2000-.0407.1067c.3604.698.7719%201.3628%201.225%201.9932a.076.076%200%2000.0842.0286c1.961-.6067%203.9495-1.5219%206.0023-3.0294a.077.077%200%2000.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061%200%2000-.0312-.0286zM8.02%2015.3312c-1.1825%200-2.1569-1.0857-2.1569-2.419%200-1.3332.9555-2.4189%202.157-2.4189%201.2108%200%202.1757%201.0952%202.1568%202.419%200%201.3332-.9555%202.4189-2.1569%202.4189zm7.9748%200c-1.1825%200-2.1569-1.0857-2.1569-2.419%200-1.3332.9554-2.4189%202.1569-2.4189%201.2108%200%202.1757%201.0952%202.1568%202.419%200%201.3332-.946%202.4189-2.1568%202.4189Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat"></span>
+    </a>
+    <a href="https://reddit.com/user/readpsymag" target="_blank" rel="noopener" aria-label="Reddit" style="width:58px;height:58px;border-radius:50%;border:1.5px solid #0A0A0A;background:#FFFFFF;color:#0A0A0A;display:flex;align-items:center;justify-content:center;transition:background .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1)" style-hover="background:#38B6FF;color:#FFFFFF;transform:translateY(-4px)">
+      <span style="width:25px;height:25px;display:block;background:currentColor;-webkit-mask:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M12%200C5.373%200%200%205.373%200%2012c0%203.314%201.343%206.314%203.515%208.485l-2.286%202.286C.775%2023.225%201.097%2024%201.738%2024H12c6.627%200%2012-5.373%2012-12S18.627%200%2012%200Zm4.388%203.199c1.104%200%201.999.895%201.999%201.999%200%201.105-.895%202-1.999%202-.946%200-1.739-.657-1.947-1.539v.002c-1.147.162-2.032%201.15-2.032%202.341v.007c1.776.067%203.4.567%204.686%201.363.473-.363%201.064-.58%201.707-.58%201.547%200%202.802%201.254%202.802%202.802%200%201.117-.655%202.081-1.601%202.531-.088%203.256-3.637%205.876-7.997%205.876-4.361%200-7.905-2.617-7.998-5.87-.954-.447-1.614-1.415-1.614-2.538%200-1.548%201.255-2.802%202.803-2.802.645%200%201.239.218%201.712.585%201.275-.79%202.881-1.291%204.64-1.365v-.01c0-1.663%201.263-3.034%202.88-3.207.188-.911.993-1.595%201.959-1.595Zm-8.085%208.376c-.784%200-1.459.78-1.506%201.797-.047%201.016.64%201.429%201.426%201.429.786%200%201.371-.369%201.418-1.385.047-1.017-.553-1.841-1.338-1.841Zm7.406%200c-.786%200-1.385.824-1.338%201.841.047%201.017.634%201.385%201.418%201.385.785%200%201.473-.413%201.426-1.429-.046-1.017-.721-1.797-1.506-1.797Zm-3.703%204.013c-.974%200-1.907.048-2.77.135-.147.015-.241.168-.183.305.483%201.154%201.622%201.964%202.953%201.964%201.33%200%202.47-.81%202.953-1.964.057-.137-.037-.29-.184-.305-.863-.087-1.795-.135-2.769-.135Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat;mask:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M12%200C5.373%200%200%205.373%200%2012c0%203.314%201.343%206.314%203.515%208.485l-2.286%202.286C.775%2023.225%201.097%2024%201.738%2024H12c6.627%200%2012-5.373%2012-12S18.627%200%2012%200Zm4.388%203.199c1.104%200%201.999.895%201.999%201.999%200%201.105-.895%202-1.999%202-.946%200-1.739-.657-1.947-1.539v.002c-1.147.162-2.032%201.15-2.032%202.341v.007c1.776.067%203.4.567%204.686%201.363.473-.363%201.064-.58%201.707-.58%201.547%200%202.802%201.254%202.802%202.802%200%201.117-.655%202.081-1.601%202.531-.088%203.256-3.637%205.876-7.997%205.876-4.361%200-7.905-2.617-7.998-5.87-.954-.447-1.614-1.415-1.614-2.538%200-1.548%201.255-2.802%202.803-2.802.645%200%201.239.218%201.712.585%201.275-.79%202.881-1.291%204.64-1.365v-.01c0-1.663%201.263-3.034%202.88-3.207.188-.911.993-1.595%201.959-1.595Zm-8.085%208.376c-.784%200-1.459.78-1.506%201.797-.047%201.016.64%201.429%201.426%201.429.786%200%201.371-.369%201.418-1.385.047-1.017-.553-1.841-1.338-1.841Zm7.406%200c-.786%200-1.385.824-1.338%201.841.047%201.017.634%201.385%201.418%201.385.785%200%201.473-.413%201.426-1.429-.046-1.017-.721-1.797-1.506-1.797Zm-3.703%204.013c-.974%200-1.907.048-2.77.135-.147.015-.241.168-.183.305.483%201.154%201.622%201.964%202.953%201.964%201.33%200%202.47-.81%202.953-1.964.057-.137-.037-.29-.184-.305-.863-.087-1.795-.135-2.769-.135Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat"></span>
+    </a>
+    <a href="https://facebook.com/readpsymag" target="_blank" rel="noopener" aria-label="Facebook" style="width:58px;height:58px;border-radius:50%;border:1.5px solid #0A0A0A;background:#FFFFFF;color:#0A0A0A;display:flex;align-items:center;justify-content:center;transition:background .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1)" style-hover="background:#38B6FF;color:#FFFFFF;transform:translateY(-4px)">
+      <span style="width:24px;height:24px;display:block;background:currentColor;-webkit-mask:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M9.101%2023.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085%201.848-5.978%205.858-5.978.401%200%20.955.042%201.468.103a8.68%208.68%200%200%201%201.141.195v3.325a8.623%208.623%200%200%200-.653-.036%2026.805%2026.805%200%200%200-.733-.009c-.707%200-1.259.096-1.675.309a1.686%201.686%200%200%200-.679.622c-.258.42-.374.995-.374%201.752v1.297h3.919l-.386%202.103-.287%201.564h-3.246v8.245C19.396%2023.238%2024%2018.179%2024%2012.044c0-6.627-5.373-12-12-12s-12%205.373-12%2012c0%205.628%203.874%2010.35%209.101%2011.647Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat;mask:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M9.101%2023.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085%201.848-5.978%205.858-5.978.401%200%20.955.042%201.468.103a8.68%208.68%200%200%201%201.141.195v3.325a8.623%208.623%200%200%200-.653-.036%2026.805%2026.805%200%200%200-.733-.009c-.707%200-1.259.096-1.675.309a1.686%201.686%200%200%200-.679.622c-.258.42-.374.995-.374%201.752v1.297h3.919l-.386%202.103-.287%201.564h-3.246v8.245C19.396%2023.238%2024%2018.179%2024%2012.044c0-6.627-5.373-12-12-12s-12%205.373-12%2012c0%205.628%203.874%2010.35%209.101%2011.647Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat"></span>
+    </a>
+    <a href="https://x.com/readpsymag" target="_blank" rel="noopener" aria-label="X" style="width:58px;height:58px;border-radius:50%;border:1.5px solid #0A0A0A;background:#FFFFFF;color:#0A0A0A;display:flex;align-items:center;justify-content:center;transition:background .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1)" style-hover="background:#38B6FF;color:#FFFFFF;transform:translateY(-4px)">
+      <span style="width:21px;height:21px;display:block;background:currentColor;-webkit-mask:url('data:image/svg+xml,%3Csvg%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M14.234%2010.162%2022.977%200h-2.072l-7.591%208.824L7.251%200H.258l9.168%2013.343L.258%2024H2.33l8.016-9.318L16.749%2024h6.993zm-2.837%203.299-.929-1.329L3.076%201.56h3.182l5.965%208.532.929%201.329%207.754%2011.09h-3.182z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat;mask:url('data:image/svg+xml,%3Csvg%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M14.234%2010.162%2022.977%200h-2.072l-7.591%208.824L7.251%200H.258l9.168%2013.343L.258%2024H2.33l8.016-9.318L16.749%2024h6.993zm-2.837%203.299-.929-1.329L3.076%201.56h3.182l5.965%208.532.929%201.329%207.754%2011.09h-3.182z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat"></span>
+    </a>
+  </div>
+</section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { menuOpen: false, animAlt: false, headerHidden: false, scrolled: false };
+  componentDidMount() {
+    const h1 = document.querySelector("h1");
+    if (h1 && window.IntersectionObserver) {
+      this._io = new IntersectionObserver(es => {
+        if (es[0].isIntersecting) this.setState(p => ({ animAlt: !p.animAlt }));
+      }, { threshold: 0.35 });
+      this._io.observe(h1);
+    }
+    this._dot = React.createRef;
+    this._move = e => {
+      const el = this._el || (this._el = document.getElementById("psydot"));
+      if (el) {
+        el.style.transform = "translate(" + (e.clientX - 7) + "px," + (e.clientY - 7) + "px)";
+        el.style.opacity = "1";
+      }
+    };
+    window.addEventListener("mousemove", this._move);
+    this._lastY = window.scrollY;
+    this._scroll = () => {
+      const y = window.scrollY;
+      if ((y > 40) !== this.state.scrolled) this.setState({ scrolled: y > 40 });
+      const hidden = y > 140 && y > this._lastY + 4;
+      const shown = y < this._lastY - 4 || y < 80;
+      if (hidden && !this.state.headerHidden) this.setState({ headerHidden: true });
+      else if (shown && this.state.headerHidden) this.setState({ headerHidden: false });
+      this._lastY = y;
+    };
+    window.addEventListener("scroll", this._scroll, { passive: true });
+    const boot = () => {
+      const c = document.getElementById("psyfilm");
+      const a = document.getElementById("psyarchive");
+      const cok = !!(c && c.getBoundingClientRect().width > 0);
+      const aok = !!(a && a.getBoundingClientRect().width > 0);
+      if (cok) this._initCanvas(c);
+      if (aok) this._initArchive(a);
+      if (cok && aok) {
+        if (this._bootT) { clearTimeout(this._bootT); this._bootT = null; }
+        return;
+      }
+      this._boot = requestAnimationFrame(boot);
+      this._bootT = setTimeout(boot, 250);
+    };
+    this._boot2 = boot;
+    this._vis = () => boot();
+    document.addEventListener("visibilitychange", this._vis);
+    window.addEventListener("load", this._vis);
+    this._watch = setInterval(() => {
+      if (!this._timer || !this._atimer || !document.body.contains(this._acv) || !document.body.contains(this._cv)) boot();
+    }, 1200);
+    boot();
+  }
+  componentDidUpdate() { if (this._boot2) this._boot2(); }
+  _initCanvas(el) {
+    if (!el || (this._cv === el && this._timer)) return;
+    if (this._timer) { clearInterval(this._timer); this._timer = null; }
+    if (this._ro) { this._ro.disconnect(); this._ro = null; }
+    this._cv = el;
+    const ctx = el.getContext("2d");
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let w = 0, h = 0;
+    const fit = () => {
+      const r = el.getBoundingClientRect();
+      w = r.width; h = r.height;
+      el.width = Math.round(w * dpr); el.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    fit();
+    if (window.ResizeObserver) { this._ro = new ResizeObserver(fit); this._ro.observe(el); }
+
+    const LOOP = 15000, TAU = Math.PI * 2, SH = 18, FPS = 18;
+    const IMPACT = 4.3, SNAP = 10.7, IX = .36, SX = .665;
+    const ink = a => "rgba(10,10,10," + Math.max(0, Math.min(1, a)).toFixed(3) + ")";
+    const eo = x => 1 - Math.pow(1 - x, 3);
+    const ei = x => x * x * x;
+    const eio = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    const seg = (t, a, b) => Math.max(0, Math.min(1, (t - a) / (b - a)));
+    const lerp = (a, b, q) => a + (b - a) * q;
+    const rnd = n => { const s = Math.sin(n * 127.1) * 43758.5453; return s - Math.floor(s); };
+
+    const SHARD = [];
+    for (let i = 0; i < SH; i++) {
+      const r1 = rnd(i + 3), r2 = rnd(i * 5.3 + 17), r3 = rnd(i * 2.1 + 41);
+      SHARD.push({ ang: -Math.PI * (0.12 + r1 * 0.76), sp: .35 + r2 * .85, len: .018 + r3 * .04, rot: (r1 - .5) * 7 });
+    }
+    const CARDS = [
+      [4.45, 6.4, "TRAUMA IS AN EVENT"],
+      [6.9, 9.0, "SUFFERING IS A CHOICE"],
+      [9.6, 11.3, "YOU DESERVE TO HEAL"],
+      [11.9, 14.3, "YOU DESERVE TO FLOURISH"]
+    ];
+
+    const frame = now => {
+      const T = Math.floor(((now % LOOP) / 1000) * FPS) / FPS;
+      const gtick = Math.floor(now / 42);
+      ctx.clearRect(0, 0, w, h);
+      const m = Math.min(w, h), cx = w / 2, horizon = h * 0.52;
+      const A1 = seg(T, 0, 3.2), A2 = seg(T, 3.2, 5.2), A3 = seg(T, 5.2, 9.2),
+            A4 = seg(T, 9.2, 11.4), A5 = seg(T, 11.4, 15);
+
+      let xn;
+      if (T < 3.2) xn = lerp(.10, .34, eo(A1));
+      else if (T < 5.2) xn = T < IMPACT ? lerp(.34, IX, seg(T, 3.2, IMPACT)) : IX - .024 * Math.sin(Math.PI * seg(T, IMPACT, 5.2));
+      else if (T < 9.2) xn = lerp(IX, .62, eio(A3));
+      else if (T < 11.4) xn = lerp(.62, SX, eio(seg(T, 9.2, SNAP)));
+      else xn = lerp(SX, 1.0, eio(A5));
+
+      const notch = seg(T, IMPACT, IMPACT + .22) * (1 - seg(T, 12.4, 14.1));
+      const load = seg(T, IMPACT, IMPACT + .5) * (1 - seg(T, SNAP, SNAP + .45));
+      const lineY = q => horizon
+        + notch * m * .028 * Math.exp(-Math.pow((q - IX) / .03, 2))
+        + load * m * .034 * Math.exp(-Math.pow((q - xn) / .17, 2));
+
+      const carry = T >= IMPACT && T < SNAP + .05;
+      const wSide = m * .095;
+      const wxn = T < IMPACT ? IX : (T < SNAP ? xn - .115 : SX - .115);
+      const wFall = seg(T, 3.2, IMPACT);
+      let wy, wRot, wA = 1;
+      if (T < IMPACT) {
+        wy = lerp(-m * .3, lineY(IX) - wSide / 2 - 1, ei(wFall));
+        wRot = wFall * 3.4;
+        wA = seg(T, 3.2, 3.45);
+      } else {
+        wy = lineY(wxn) - wSide / 2 - 1 - Math.abs(Math.sin(Math.PI * T * 1.1)) * (carry && T > SNAP ? 0 : 1.6);
+        wRot = .12 + .04 * Math.sin(T * 2.2);
+        if (T >= SNAP) { wRot = .12; wA = 1 - seg(T, 12.3, 14.1); }
+      }
+      const wx = wxn * w;
+
+      let dr, dA = .95 * seg(T, 0, .35), hopA, hopF;
+      if (T < 3.2) { dr = 5.2; hopA = 5; hopF = 2.3; }
+      else if (T < IMPACT) { dr = 5.2; hopA = 4.4; hopF = 2.3; }
+      else if (T < 5.2) { dr = lerp(5.2, 4.2, seg(T, IMPACT, 4.7)); hopA = 0; hopF = 0; }
+      else if (T < 9.2) { dr = 4.2; hopA = 1.5; hopF = 1.05; }
+      else if (T < SNAP) { dr = 4.2; hopA = .5; hopF = .8; }
+      else {
+        const q = eio(seg(T, SNAP, 15));
+        dr = lerp(4.2, 6.6, q); hopA = lerp(2.4, 7.5, q); hopF = lerp(1.5, 2.7, q);
+        dA = .95 * (1 - seg(T, 14.25, 14.8));
+      }
+      const dy = lineY(xn) - dr - (hopA ? Math.abs(Math.sin(Math.PI * T * hopF)) * hopA : 0);
+
+      ctx.save();
+      ctx.translate((rnd(gtick) - .5) * 1.7, (rnd(gtick + 5) - .5) * 1.3);
+      ctx.lineWidth = 1.5;
+      ctx.lineJoin = "round";
+
+      const steps = Math.max(72, Math.floor(w / 5));
+      ctx.beginPath();
+      for (let s = 0; s <= steps; s++) {
+        const q = s / steps;
+        if (s === 0) ctx.moveTo(0, lineY(0)); else ctx.lineTo(q * w, lineY(q));
+      }
+      ctx.strokeStyle = ink(.85);
+      ctx.stroke();
+
+      const scarA = (T >= IMPACT ? 1 : 0) * (1 - seg(T, 12.4, 14.1));
+      if (scarA > .01) {
+        const x0 = IX * w, x1 = Math.max(x0 + 2, wx);
+        ctx.beginPath();
+        for (let s = 0; s <= 30; s++) {
+          const q = s / 30, X = lerp(x0, x1, q);
+          const Y = lineY(X / w) + (s % 2 ? -1 : 1) * 2.4 + (rnd(s * 3.1 + 2) - .5) * 1.8;
+          if (s === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+        }
+        ctx.strokeStyle = ink(.42 * scarA);
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        ctx.lineWidth = 1.5;
+      }
+
+      if (carry && T >= IMPACT) {
+        const tq = seg(T, 9.2, SNAP);
+        ctx.beginPath();
+        ctx.moveTo(wx + wSide / 2, wy);
+        ctx.lineTo(xn * w, dy);
+        ctx.strokeStyle = ink(.4 + .35 * tq);
+        ctx.lineWidth = 1 - .35 * tq;
+        ctx.stroke();
+        ctx.lineWidth = 1.5;
+      }
+
+      if (T >= SNAP) {
+        const bx = lerp(wx + wSide / 2, SX * w, .5), by = lerp(wy, lineY(SX) - 5, .5);
+        for (let i = 0; i < SH; i++) {
+          const s = SHARD[i], q = seg(T, SNAP, SNAP + .9 + i * .02);
+          if (q >= 1) continue;
+          const d = eo(q) * s.sp * m * .3;
+          const px = bx + Math.cos(s.ang) * d, py = by + Math.sin(s.ang) * d + ei(q) * m * .12;
+          const L = s.len * m * .5, rr = s.rot * q;
+          const ca = Math.cos(rr) * L, sa = Math.sin(rr) * L;
+          ctx.beginPath();
+          ctx.moveTo(px - ca, py - sa); ctx.lineTo(px + ca, py + sa);
+          ctx.strokeStyle = ink(.75 * (1 - q));
+          ctx.lineWidth = 1.3;
+          ctx.stroke();
+        }
+        ctx.lineWidth = 1.5;
+      }
+
+      if (wA > .01) {
+        ctx.save();
+        ctx.translate(wx, wy);
+        ctx.rotate(wRot);
+        ctx.fillStyle = ink(.92 * wA);
+        ctx.fillRect(-wSide / 2, -wSide / 2, wSide, wSide);
+        ctx.restore();
+      }
+
+      for (let k = 0; k < 3; k++) {
+        const q = seg(T, IMPACT + k * .26, IMPACT + 1.5 + k * .26);
+        if (q > 0 && q < 1) {
+          ctx.beginPath();
+          ctx.arc(IX * w, lineY(IX), m * .03 + eo(q) * m * .46, 0, TAU);
+          ctx.strokeStyle = ink(.42 * (1 - q));
+          ctx.lineWidth = 2.2 * (1 - q) + .4;
+          ctx.stroke();
+        }
+      }
+
+      ctx.beginPath();
+      ctx.arc(xn * w, dy, Math.max(.8, dr), 0, TAU);
+      ctx.fillStyle = ink(dA);
+      ctx.fill();
+      ctx.restore();
+
+      const flash = Math.max(1 - seg(T, IMPACT, IMPACT + .34), (1 - seg(T, SNAP, SNAP + .22)) * .55);
+      if (flash > 0 && flash < 1) {
+        ctx.fillStyle = "rgba(255,255,255," + (.88 * flash).toFixed(3) + ")";
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      const despair = seg(T, IMPACT, 6) * (1 - seg(T, SNAP, 12.2)), hope = eio(seg(T, SNAP, 15));
+      const g = ctx.createRadialGradient(cx, horizon, m * (.22 - .1 * despair), cx, horizon, Math.max(w, h) * (.76 - .32 * despair + .18 * hope));
+      g.addColorStop(0, "rgba(255,255,255,0)");
+      g.addColorStop(1, "rgba(255,255,255,.94)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.fillStyle = ink(.055);
+      for (let i = 0; i < 900; i++) {
+        ctx.fillRect(Math.floor(rnd(gtick * 97 + i) * w), Math.floor(rnd(gtick * 31 + i * 2.3) * h), 1, 1);
+      }
+      if (rnd(gtick) > .87) {
+        const sx = rnd(gtick + 7) * w;
+        ctx.beginPath(); ctx.moveTo(sx, 0); ctx.lineTo(sx + (rnd(gtick + 3) - .5) * 10, h);
+        ctx.strokeStyle = ink(.1); ctx.lineWidth = 1; ctx.stroke();
+      }
+      ctx.fillStyle = "rgba(255,255,255," + (.05 * rnd(gtick + 41)).toFixed(3) + ")";
+      ctx.fillRect(0, 0, w, h);
+
+      for (let c = 0; c < CARDS.length; c++) {
+        const a0 = CARDS[c][0], b0 = CARDS[c][1];
+        if (T < a0 || T > b0) continue;
+        const al = Math.min(seg(T, a0, a0 + .18), 1 - seg(T, b0 - .18, b0));
+        const fs = Math.round(Math.max(10, m * .031));
+        ctx.save();
+        ctx.font = "600 " + fs + "px Outfit, sans-serif";
+        ctx.letterSpacing = ".22em";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.globalAlpha = al;
+        const bw = ctx.measureText(CARDS[c][2]).width + fs * 3.2, bh = fs * 2.7;
+        const bx = cx - bw / 2, by = h * .9 - bh / 2;
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(bx, by, bw, bh);
+        ctx.strokeStyle = ink(.9); ctx.lineWidth = 1.5;
+        ctx.strokeRect(bx + .75, by + .75, bw - 1.5, bh - 1.5);
+        ctx.fillStyle = ink(.92);
+        ctx.fillText(CARDS[c][2], cx, h * .9 + 1);
+        ctx.restore();
+      }
+
+    };
+    const draw = now => {
+      if (!w || !h) { fit(); return; }
+      try { frame(now); } catch (e) {
+        if (!this._filmErr) { this._filmErr = 1; console.error("film", e); }
+      }
+    };
+    draw(performance.now());
+    this._timer = setInterval(() => draw(performance.now()), 33);
+  }
+  _initArchive(el) {
+    if (!el || (this._acv === el && this._atimer)) return;
+    if (this._atimer) { clearInterval(this._atimer); this._atimer = null; }
+    if (this._aro) { this._aro.disconnect(); this._aro = null; }
+    this._acv = el;
+    const ctx = el.getContext("2d");
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let w = 0, h = 0;
+    const fit = () => {
+      const r = el.getBoundingClientRect();
+      w = r.width; h = r.height;
+      el.width = Math.round(w * dpr); el.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    fit();
+    if (window.ResizeObserver) { this._aro = new ResizeObserver(fit); this._aro.observe(el); }
+
+    const LOOP = 19400, TAU = Math.PI * 2, FPS = 20;
+    const cl = x => Math.max(0, Math.min(1, x));
+    const ink = a => "rgba(10,10,10," + cl(a).toFixed(3) + ")";
+    const blue = a => "rgba(56,182,255," + cl(a).toFixed(3) + ")";
+    const red = a => "rgba(255,87,87," + cl(a).toFixed(3) + ")";
+    const eo = x => 1 - Math.pow(1 - x, 3);
+    const ei = x => x * x * x;
+    const eio = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    const seg = (t, a, b) => cl((t - a) / (b - a));
+    const lerp = (a, b, q) => a + (b - a) * q;
+    const rnd = n => { const s = Math.sin(n * 127.1) * 43758.5453; return s - Math.floor(s); };
+
+    const SW = 210, SHT = 290;
+    const BW = 300, BH = 620, NW = 96, NH = 150;
+    const COLS = 17, ROWS = 5, HC = 8, HR = 2, OC = 11, OR = 1;
+    const CX = BW + 130, CY = BH + 150;
+    const cellX = i => (i - HC) * CX;
+    const cellY = j => (j - HR) * CY;
+    const SKY = -560;
+
+    // ---- handwriting ------------------------------------------------------
+    const SHEETS = {};
+    const sheetOf = seed => {
+      if (SHEETS[seed]) return SHEETS[seed];
+      const lines = [], nl = 5 + Math.floor(rnd(seed * 1.7 + 2) * 3);
+      for (let i = 0; i < nl; i++) {
+        const words = [], maxx = .26 + rnd(seed + i * 3.3) * .12;
+        let x = -.34;
+        while (x < maxx) {
+          const wl = .042 + rnd(seed + i * 7.1 + x * 31) * .092;
+          if (x + wl > maxx) { if (maxx - x > .03) words.push([x, maxx - x]); break; }
+          words.push([x, wl]);
+          x += wl + .019 + rnd(seed + i * 2.3 + x * 17) * .016;
+        }
+        lines.push(words);
+      }
+      SHEETS[seed] = lines;
+      return lines;
+    };
+    let head = null;
+    const word = (x0, wl, y, seed, frac) => {
+      const n = Math.max(3, Math.round(wl * 92));
+      ctx.beginPath();
+      let lx = 0, ly = 0;
+      for (let k = 0; k <= n; k++) {
+        const q = k / n;
+        if (q > frac) break;
+        lx = (x0 + wl * q) * SW;
+        ly = y + Math.sin(q * 9 + seed * 6) * SHT * .009 + (rnd(seed * 3 + k) - .5) * SHT * .006;
+        if (k === 0) ctx.moveTo(lx, ly); else ctx.lineTo(lx, ly);
+      }
+      ctx.stroke();
+      if (frac < 1) head = [lx, ly];
+    };
+
+    // one letter: open sheet (fold 0) through sealed square (fold 1)
+    const sheet = o => {
+      const alpha = o.a == null ? 1 : o.a;
+      if (alpha <= .01) return;
+      const f = o.fold || 0, pr = o.press || 0, tt = o.t, seed = o.seed;
+      const inkA = o.inkA == null ? 0 : o.inkA;
+      const hue = o.hue || ink;
+      const fsc = lerp(1, .46, f) * (1 + pr * .02 * Math.sin(tt * 4.1 + seed * 2.3));
+      ctx.save();
+      ctx.translate(o.x, o.y);
+      if (pr > .01) ctx.translate((rnd(seed + Math.floor(tt * 24)) - .5) * SW * .014 * pr, (rnd(seed * 2.1 + Math.floor(tt * 24) + 3) - .5) * SW * .014 * pr);
+      if (o.rot) ctx.rotate(o.rot);
+      ctx.scale(fsc, fsc);
+      const lw = ctx.lineWidth;
+      ctx.lineWidth = lw / fsc;
+      ctx.fillStyle = "#FFFFFF";
+      ctx.globalAlpha = alpha;
+      ctx.fillRect(-SW / 2, -SHT / 2, SW, SHT);
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = ink(.85 * alpha);
+      ctx.strokeRect(-SW / 2, -SHT / 2, SW, SHT);
+      if (f > .02) {
+        ctx.strokeStyle = ink(.42 * alpha * f);
+        ctx.beginPath();
+        ctx.moveTo(-SW / 2, 0); ctx.lineTo(SW / 2, 0);
+        ctx.moveTo(0, -SHT / 2); ctx.lineTo(0, SHT / 2);
+        ctx.stroke();
+      }
+      head = null;
+      if (inkA > .01) {
+        const ls = sheetOf(seed);
+        let total = 0;
+        for (let i = 0; i < ls.length; i++) total += ls[i].length;
+        let done = 0;
+        const shown = (o.reveal == null ? 1 : o.reveal) * total;
+        ctx.strokeStyle = hue(.72 * alpha * inkA);
+        for (let i = 0; i < ls.length; i++) {
+          const y = (-.30 + i * .107) * SHT;
+          for (let j = 0; j < ls[i].length; j++) {
+            const fr = cl(shown - done);
+            if (fr > 0) word(ls[i][j][0], ls[i][j][1], y, seed + i * 1.7 + j * .9, fr);
+            done++;
+          }
+        }
+      }
+      if (pr > .02) {
+        ctx.strokeStyle = ink(.55 * alpha * pr);
+        for (let k = 0; k < 9; k++) {
+          const s1 = rnd(seed * 3.1 + k), s2 = rnd(seed * 1.7 + k * 5.3), s3 = rnd(seed + k * 2.9);
+          const X = Math.sin(tt * (.9 + s3 * 2.2) + s1 * 9) * SW * .32 * (.4 + s2 * .55);
+          const Y = Math.cos(tt * (.8 + s3 * 1.9) + s2 * 11) * SHT * .32 * (.4 + s1 * .55);
+          const L = SW * (.03 + s3 * .05), ang = s1 * 6.28 + tt * .8;
+          ctx.beginPath();
+          ctx.moveTo(X - Math.cos(ang) * L, Y - Math.sin(ang) * L);
+          ctx.lineTo(X + Math.cos(ang) * L, Y + Math.sin(ang) * L);
+          ctx.stroke();
+        }
+      }
+      const b = o.beats;
+      if (b) {
+        if (b.strike > .01) {
+          const ly = (-.30 + .107 * 2) * SHT;
+          ctx.strokeStyle = ink(.68 * alpha);
+          ctx.beginPath();
+          ctx.moveTo(-.35 * SW, ly + SHT * .004);
+          ctx.lineTo((-.35 + .62 * eo(b.strike)) * SW, ly - SHT * .006);
+          ctx.stroke();
+        }
+        if (b.blot > .01) {
+          const tr = SHT * .026 * eo(b.blot);
+          const cx0 = .13 * SW, cy0 = .17 * SHT;
+          const g = ctx.createRadialGradient(cx0, cy0, 0, cx0, cy0, tr * 2.6);
+          g.addColorStop(0, red(.34 * alpha * b.blot));
+          g.addColorStop(.55, red(.12 * alpha * b.blot));
+          g.addColorStop(1, red(0));
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(cx0, cy0, tr * 2.6, 0, TAU);
+          ctx.fill();
+          ctx.strokeStyle = ink(.2 * alpha * b.blot);
+          ctx.beginPath();
+          for (let k = 0; k <= 22; k++) {
+            const an = k / 22 * TAU, rr = tr * (.85 + rnd(k * 2.7 + seed) * .3);
+            const X = cx0 + Math.cos(an) * rr, Y = cy0 + Math.sin(an) * rr;
+            if (k === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+          }
+          ctx.stroke();
+        }
+        if (b.pen > .01 && head) {
+          ctx.fillStyle = ink(.85 * alpha * b.pen);
+          ctx.beginPath();
+          ctx.arc(head[0] + (rnd(Math.floor(tt * 22)) - .5) * 2.2, head[1] + (rnd(Math.floor(tt * 22) + 5) - .5) * 2.2, 2.6, 0, TAU);
+          ctx.fill();
+        }
+        if (b.caret > .01 && Math.floor(tt * 2) % 2 === 0) {
+          ctx.fillStyle = ink(.8 * alpha * b.caret);
+          ctx.fillRect(-.34 * SW, -.34 * SHT, 2.4, SHT * .045);
+        }
+      }
+      ctx.lineWidth = lw;
+      ctx.restore();
+    };
+
+    // a draft that never made it — crumpled and set aside
+    const crumple = (x, y, seed, a, r) => {
+      if (a <= .01) return;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate((rnd(seed) - .5) * .8);
+      ctx.strokeStyle = ink(.62 * a);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.beginPath();
+      for (let k = 0; k <= 11; k++) {
+        const an = k / 11 * TAU, rr = r * (.62 + rnd(seed + k * 3.1) * .55);
+        const X = Math.cos(an) * rr, Y = Math.sin(an) * rr;
+        if (k === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.strokeStyle = ink(.3 * a);
+      for (let k = 0; k < 4; k++) {
+        const s1 = rnd(seed * 2.3 + k), s2 = rnd(seed * 1.3 + k * 5);
+        ctx.beginPath();
+        ctx.moveTo((s1 - .5) * r * 1.2, (s2 - .5) * r * 1.2);
+        ctx.lineTo((s2 - .5) * r * 1.5, (s1 - .5) * r * 1.4);
+        ctx.stroke();
+      }
+      ctx.restore();
+    };
+
+    const bottlePath = () => {
+      const bx = BW / 2, nx = NW / 2, top = -BH / 2, bot = BH / 2, sh = top + NH;
+      ctx.beginPath();
+      ctx.moveTo(-nx, top);
+      ctx.lineTo(-nx, sh);
+      ctx.bezierCurveTo(-nx - 6, sh + 58, -bx, sh + 46, -bx, sh + 118);
+      ctx.lineTo(-bx, bot - 26);
+      ctx.quadraticCurveTo(-bx, bot, -bx + 26, bot);
+      ctx.lineTo(bx - 26, bot);
+      ctx.quadraticCurveTo(bx, bot, bx, bot - 26);
+      ctx.lineTo(bx, sh + 118);
+      ctx.bezierCurveTo(bx, sh + 46, nx + 6, sh + 58, nx, sh);
+      ctx.lineTo(nx, top);
+    };
+
+    // packed slots inside the bottle, bottom-up
+    const SLOTS = [];
+    for (let i = 0; i < 13; i++) {
+      const row = Math.floor(i / 2), col = i % 2;
+      const inNeck = row >= 6;
+      SLOTS.push({
+        x: inNeck ? 0 : (col - .5) * 104 + (rnd(i * 3.3) - .5) * 14,
+        y: BH / 2 - 52 - row * 92 - (inNeck ? 40 : 0),
+        rot: (rnd(i * 7.1 + 2) - .5) * (inNeck ? .5 : 1.15),
+        t: 5.55 + i * .26
+      });
+    }
+    const T_CRACK = [10.05, 10.5, 10.95];
+    const CRACKS = [];
+    for (let c = 0; c < 3; c++) {
+      const side = c === 1 ? 1 : -1, sh = -BH / 2 + NH;
+      let x = side * (BW / 2), y = sh + 118 + c * 132;
+      const pts = [[x, y]];
+      for (let k = 0; k < 5; k++) {
+        x -= side * (14 + rnd(c * 5.1 + k) * 19);
+        y += (rnd(c * 3.7 + k * 2.3) - .5) * 74;
+        pts.push([x, y]);
+      }
+      const br = [];
+      const bi = 1 + Math.floor(rnd(c + 9) * 3);
+      let bx2 = pts[bi][0], by2 = pts[bi][1];
+      br.push([bx2, by2]);
+      for (let k = 0; k < 3; k++) {
+        bx2 -= side * (8 + rnd(c * 2.9 + k) * 16);
+        by2 += (k % 2 ? -1 : 1) * (26 + rnd(c + k * 4.1) * 32);
+        br.push([bx2, by2]);
+      }
+      CRACKS.push({ pts: pts, br: br, t: T_CRACK[c], from: [pts[0][0], pts[0][1]], side: side });
+    }
+    const SHARDS = [];
+    for (let i = 0; i < 18; i++) SHARDS.push({
+      c: i % 3, t: T_CRACK[i % 3] + .05, ang: (rnd(i * 3.1) - .5) * 1.5,
+      sp: .5 + rnd(i * 7.7) * 1.1, len: 10 + rnd(i * 2.3) * 22, rot: (rnd(i + 5) - .5) * 6
+    });
+    const ESC = [];
+    for (let i = 0; i < 5; i++) ESC.push({ c: i % 3, t: 10.5 + i * .3, sp: .7 + rnd(i * 4.3) * .8, rot: (rnd(i + 2) - .5) * 7 });
+    const PART = [];
+    for (let i = 0; i < 54; i++) PART.push({
+      x: (rnd(i + 1) - .5) * .68, y: (rnd(i * 3.1 + 9) - .5) * .58,
+      sp: .5 + rnd(i * 5.7 + 3) * .95, dx: (rnd(i * 2.3 + 11) - .5) * .7
+    });
+    const RISE = [];
+    for (let i = 0; i < 7; i++) RISE.push({ t: 13.0 + i * .42, sp: .8 + rnd(i * 3.7) * .6, rot: (rnd(i + 3) - .5) * 1.6 });
+
+    const CAPS = [
+      [1.05, 3.10, "SOME THINGS WE ONLY EVER TELL PAPER", 0],
+      [3.45, 4.95, "SO WE FOLD IT SMALLER", 0],
+      [5.70, 7.55, "AND KEEP IT SOMEWHERE SAFE", 0],
+      [7.80, 9.70, "IT NEVER GETS LIGHTER IN THERE", 0],
+      [10.15, 11.60, "UNTIL THE GLASS GIVES", 0],
+      [12.60, 15.05, "EVERY ONE OF THESE IS SOMEONE", 0],
+      [16.60, 19.05, "LET YOURS OUT. ANONYMOUSLY.", 1]
+    ];
+
+    const draw = now => {
+      const T = Math.floor(((now % LOOP) / 1000) * FPS) / FPS;
+      const gt = Math.floor(now / 45);
+      ctx.clearRect(0, 0, w, h);
+
+      const SV = Math.min(w / SW, h / SHT) * .56;
+      const BV = Math.min(w / (BW * 2.35), h / (BH * 1.22));
+      const FAR = BV * .30;
+
+      // ---- act state -----------------------------------------------------
+      const bottleA = seg(T, 4.7, 5.5) * (1 - seg(T, 16.35, 17.0));
+      const holdBreath = seg(T, 9.35, 9.5) * (1 - seg(T, 9.85, 10.0));
+      const strain = eo(seg(T, 6.9, 9.6)) * (1 - seg(T, 11.4, 12.0)) * (1 - .9 * holdBreath);
+      const corkQ = eio(seg(T, 8.9, 9.35));
+      const fillN = Math.min(SLOTS.length, Math.floor(seg(T, 5.55, 9.5) * SLOTS.length) + 1);
+      const fieldA = eo(seg(T, 11.9, 12.9)) * (1 - seg(T, 15.5, 16.2));
+      const relQ = seg(T, 16.3, 17.5);
+      const relY = lerp(-BH / 2 - 50, -BH / 2 - 320, eo(relQ));
+      const unfold = 1 - eio(seg(T, 17.25, 18.05));
+      const lift = seg(T, 17.9, 18.85);
+
+      const heroFold = eio(seg(T, 3.35, 4.35));
+      const heroInk = 1 - .78 * seg(T, 3.5, 4.25);
+      const heroReveal = Math.min(1,
+        seg(T, .35, .95) * .22 + seg(T, 1.15, 1.62) * .2 + seg(T, 1.98, 2.42) * .22 + seg(T, 2.66, 3.05) * .4);
+      const heroBeats = {
+        strike: seg(T, 1.66, 1.9) * (1 - seg(T, 3.5, 4.0)),
+        blot: seg(T, 2.10, 2.62) * (1 - seg(T, 3.55, 4.2)),
+        pen: seg(T, .12, .26) * (1 - seg(T, 3.06, 3.2)),
+        caret: seg(T, .02, .1) * (1 - seg(T, .3, .4)) + seg(T, 18.9, 19.1)
+      };
+
+      // breath: slow, then shallow and fast under strain, slow again after release
+      const bp = 1 + .0055 * Math.sin(T * 1.45) + .0075 * strain * Math.sin(T * 7.1) + .01 * eo(relQ) * Math.sin(T * 1.1);
+
+      let sc, camX, camY;
+      if (T < 4.35) { sc = SV; camX = 0; camY = SKY; }
+      else if (T < 5.6) {
+        const q = eio(seg(T, 4.35, 5.6));
+        sc = lerp(SV, BV, q); camX = 0; camY = lerp(SKY, 0, q);
+      } else if (T < 11.7) {
+        const q = seg(T, 5.6, 11.7);
+        sc = BV * lerp(1, .94, q); camX = 0; camY = lerp(0, -46, q);
+      } else if (T < 15.3) {
+        const q = eio(seg(T, 11.7, 13.0));
+        sc = lerp(BV * .94, FAR, q);
+        camX = lerp(0, CX * 1.7, seg(T, 13.0, 15.3));
+        camY = lerp(-46, 0, q);
+      } else {
+        const q = eio(seg(T, 15.3, 16.8));
+        sc = lerp(FAR, SV * .9, q);
+        camX = lerp(CX * 1.7, 0, q);
+        camY = lerp(0, -BH / 2 - 320, q);
+      }
+      sc *= bp;
+
+      let hit = 0;
+      for (let c = 0; c < CRACKS.length; c++) hit += T >= CRACKS[c].t ? Math.pow(1 - seg(T, CRACKS[c].t, CRACKS[c].t + .3), 2) : 0;
+      const thud = Math.pow(1 - seg(T, 9.35, 9.62), 2.4);
+      ctx.save();
+      ctx.translate((rnd(gt) - .5) * 1.6 + (rnd(gt * 1.7) - .5) * (hit * 6 + thud * 4), (rnd(gt + 7) - .5) * 1.2 + (rnd(gt * 2.3 + 9) - .5) * (hit * 4.5 + thud * 3));
+      ctx.translate(w / 2, h / 2);
+      ctx.scale(sc, sc);
+      ctx.translate(-camX, -camY);
+      ctx.lineWidth = 1.5 / sc;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+
+      // ---- the field: everyone else, holding it in -----------------------
+      if (fieldA > .01) {
+        const halfW = (w / 2) / sc + CX, halfH = (h / 2) / sc + CY;
+        for (let i = 0; i < COLS; i++) {
+          for (let j = 0; j < ROWS; j++) {
+            if (i === HC && j === HR) continue;
+            const px = cellX(i), py = cellY(j);
+            if (Math.abs(px - camX) > halfW || Math.abs(py - camY) > halfH) continue;
+            const seed = i * 13.7 + j * 4.3 + 1;
+            const d = Math.min(1, Math.hypot(i - HC, j - HR) / 8.5);
+            const open = i === OC && j === OR;
+            let a = fieldA * (.3 + .7 * eo(seg(T, 11.9 + d * .55, 12.6 + d * .55)));
+            if (open) a = Math.max(a, fieldA);
+            if (a <= .02) continue;
+            a *= lerp(1, .5, d);
+            const lvl = .58 + rnd(seed * 2.7) * .4;
+            ctx.save();
+            ctx.translate(px, py + (rnd(seed * 1.9) - .5) * 34);
+            const br = .5 + .5 * Math.sin(T * (1.6 + rnd(seed) * 1.8) + seed * 2.1);
+            ctx.translate((rnd(seed + gt * .5) - .5) * 4 * br, 0);
+            const vs = (.9 + rnd(seed * 3.3) * .18) * (1 + .006 * Math.sin(T * (1.5 + rnd(seed) * 1.4) + seed));
+            ctx.scale(vs, vs);
+            ctx.lineWidth = (1.5 / sc) / vs;
+            bottlePath();
+            ctx.strokeStyle = ink(.8 * a);
+            ctx.stroke();
+            if (!open) {
+              ctx.strokeStyle = ink(.7 * a);
+              ctx.strokeRect(-NW / 2 - 9, -BH / 2 - 16, NW + 18, 18);
+            }
+            const bot = BH / 2 - 20, top0 = -BH / 2 + NH + 118;
+            const ly = lerp(bot, top0 - 90, open ? .1 : lvl);
+            for (let k = 0; k < 4; k++) {
+              const yy = bot - 40 - k * 96;
+              if (yy < ly) break;
+              for (let c2 = 0; c2 < 2; c2++) {
+                ctx.save();
+                ctx.translate((c2 - .5) * 104, yy);
+                ctx.rotate((rnd(seed + k * 3 + c2) - .5) * 1.1);
+                ctx.strokeStyle = ink(.5 * a);
+                ctx.strokeRect(-SW * .23, -SHT * .23, SW * .46, SHT * .46);
+                ctx.restore();
+              }
+            }
+            if (open) {
+              for (let k = 0; k < RISE.length; k++) {
+                const q = seg(T, RISE[k].t, RISE[k].t + 2.1);
+                if (q <= 0 || q >= 1) continue;
+                const y = -BH / 2 - 40 - eo(q) * BH * 1.15 * RISE[k].sp;
+                const x = Math.sin(q * 3.4 + k) * BW * .3 * q;
+                sheet({
+                  x: x, y: y, seed: k * 8.3 + 91, a: a * (1 - q * .55), reveal: 1,
+                  inkA: .5, fold: 1 - eo(q) * .75, t: T, rot: RISE[k].rot * q, hue: blue
+                });
+              }
+            }
+            ctx.restore();
+          }
+        }
+      }
+
+      // ---- the glass, in front of what it holds --------------------------
+      const glass = () => {
+        if (bottleA <= .01) return;
+        ctx.save();
+        ctx.translate((rnd(gt * 1.3) - .5) * 7 * strain, (rnd(gt * 1.9 + 4) - .5) * 4 * strain);
+        const sh0 = -BH / 2 + NH;
+        ctx.beginPath();
+        ctx.ellipse(0, BH / 2 + 16, BW * .52, 16, 0, 0, TAU);
+        ctx.fillStyle = ink(.07 * bottleA);
+        ctx.fill();
+        bottlePath();
+        ctx.strokeStyle = ink(.88 * bottleA);
+        ctx.stroke();
+        ctx.strokeStyle = ink(.2 * bottleA);
+        ctx.beginPath();
+        ctx.moveTo(-BW / 2 + 24, sh0 + 152);
+        ctx.lineTo(-BW / 2 + 24, BH / 2 - 64);
+        ctx.moveTo(BW / 2 - 18, sh0 + 190);
+        ctx.lineTo(BW / 2 - 18, BH / 2 - 130);
+        ctx.stroke();
+        // the cork: pressed down, sealing it
+        if (corkQ > .01) {
+          const cy = lerp(-BH / 2 - 120, -BH / 2 - 7, corkQ);
+          ctx.strokeStyle = ink(.85 * bottleA);
+          ctx.strokeRect(-NW / 2 - 9, cy - 9, NW + 18, 20);
+          ctx.strokeStyle = ink(.3 * bottleA);
+          ctx.beginPath();
+          ctx.moveTo(-NW / 2 - 2, cy + 1); ctx.lineTo(NW / 2 + 2, cy + 1);
+          ctx.stroke();
+        }
+        if (strain > .02) {
+          for (let k = 0; k < 3; k++) {
+            const puls = Math.max(0, Math.sin(T * (2.3 + k * .5) + k * 2.1));
+            if (puls < .5) continue;
+            const yy = sh0 + 70 + k * 150, side = k % 2 ? 1 : -1;
+            ctx.strokeStyle = ink(.38 * strain * bottleA * (puls - .5) / .5);
+            ctx.beginPath();
+            ctx.moveTo(side * (BW / 2 + 4), yy - 22);
+            ctx.lineTo(side * (BW / 2 + 26), yy);
+            ctx.lineTo(side * (BW / 2 + 6), yy + 24);
+            ctx.stroke();
+          }
+        }
+        for (let c = 0; c < CRACKS.length; c++) {
+          const ck = CRACKS[c], cq = seg(T, ck.t, ck.t + .42);
+          if (cq <= 0) continue;
+          ctx.strokeStyle = ink(.78 * bottleA);
+          ctx.lineWidth = (1.5 / sc) * 1.3;
+          const n = ck.pts.length - 1, upto = cq * n;
+          ctx.beginPath();
+          ctx.moveTo(ck.pts[0][0], ck.pts[0][1]);
+          for (let k = 1; k <= n; k++) {
+            if (upto < k) {
+              const f = Math.max(0, upto - (k - 1));
+              ctx.lineTo(lerp(ck.pts[k - 1][0], ck.pts[k][0], f), lerp(ck.pts[k - 1][1], ck.pts[k][1], f));
+              break;
+            }
+            ctx.lineTo(ck.pts[k][0], ck.pts[k][1]);
+          }
+          ctx.stroke();
+          if (cq > .55) {
+            const bq = seg(cq, .55, 1), bn = ck.br.length - 1, bupto = bq * bn;
+            ctx.beginPath();
+            ctx.moveTo(ck.br[0][0], ck.br[0][1]);
+            for (let k = 1; k <= bn; k++) {
+              if (bupto < k) {
+                const f = Math.max(0, bupto - (k - 1));
+                ctx.lineTo(lerp(ck.br[k - 1][0], ck.br[k][0], f), lerp(ck.br[k - 1][1], ck.br[k][1], f));
+                break;
+              }
+              ctx.lineTo(ck.br[k][0], ck.br[k][1]);
+            }
+            ctx.stroke();
+          }
+          ctx.lineWidth = 1.5 / sc;
+        }
+        for (let i = 0; i < SHARDS.length; i++) {
+          const sd = SHARDS[i], q = seg(T, sd.t, sd.t + .8);
+          if (q <= 0 || q >= 1) continue;
+          const o = CRACKS[sd.c].from;
+          const d = eo(q) * 150 * sd.sp;
+          const px2 = o[0] + Math.cos(sd.ang) * d * CRACKS[sd.c].side, py2 = o[1] + Math.sin(sd.ang) * d + ei(q) * 190;
+          const rr = sd.rot * q, L = sd.len * .5;
+          ctx.strokeStyle = ink(.8 * (1 - q) * bottleA);
+          ctx.beginPath();
+          ctx.moveTo(px2 - Math.cos(rr) * L, py2 - Math.sin(rr) * L);
+          ctx.lineTo(px2 + Math.cos(rr) * L, py2 + Math.sin(rr) * L);
+          ctx.stroke();
+        }
+        ctx.restore();
+      };
+
+      const drop = (i, sl) => {
+        const q = seg(T, sl.t, sl.t + .52);
+        if (q <= 0) return null;
+        return { x: sl.x * Math.min(1, q * 1.6), y: lerp(-BH / 2 - 320, sl.y, ei(q)), rot: sl.rot * eo(q) };
+      };
+
+      // the others already folded away
+      if (bottleA > .01) {
+        for (let i = 1; i < fillN; i++) {
+          const p = drop(i, SLOTS[i]);
+          if (!p) continue;
+          sheet({
+            x: p.x, y: p.y, seed: i * 9.1 + 5, a: bottleA, reveal: 1, inkA: .32 * bottleA,
+            fold: 1, press: strain * (.5 + .5 * rnd(i * 2.3)), t: T, rot: p.rot
+          });
+        }
+      }
+
+      // ---- the one being written, and the drafts that never made it ------
+      if (T < 4.6) {
+        crumple(-SW * 1.02, SKY + SHT * .34, 3.7, seg(T, 1.25, 1.5) * (1 - seg(T, 4.3, 4.6)), SW * .17);
+        crumple(SW * 1.06, SKY + SHT * .42, 8.1, seg(T, 2.5, 2.75) * (1 - seg(T, 4.3, 4.6)), SW * .15);
+      }
+      const heroDrop = drop(0, SLOTS[0]);
+      const relOn = relQ > 0;
+      if (relOn) {
+        sheet({
+          x: 0, y: relY, seed: 1, a: 1, reveal: 1, inkA: .42 * (1 - seg(T, 18.0, 18.75)),
+          fold: unfold, press: (1 - eo(relQ)) * .5, t: T,
+          rot: (1 - eo(relQ)) * .3, hue: blue,
+          beats: { strike: 0, blot: 0, pen: 0, caret: heroBeats.caret }
+        });
+        if (lift > 0) {
+          for (let i = 0; i < PART.length; i++) {
+            const p = PART[i], q = cl((lift - rnd(i * 7.7) * .24) / .76);
+            if (q <= 0) continue;
+            ctx.beginPath();
+            ctx.arc((p.x + p.dx * q * 1.4) * SW, relY + p.y * SHT - eo(q) * SHT * p.sp * .95, 1.9 / sc, 0, TAU);
+            ctx.fillStyle = blue(.55 * (1 - q));
+            ctx.fill();
+          }
+        }
+      } else if (T < 5.9 || bottleA > .01) {
+        sheet({
+          x: heroDrop ? heroDrop.x : 0, y: heroDrop ? heroDrop.y : SKY, seed: 1,
+          a: T < 5.9 ? 1 : bottleA, reveal: heroReveal, inkA: heroInk, fold: heroFold,
+          press: heroDrop && T > 6.1 ? strain * .85 : 0, t: T,
+          rot: heroDrop ? heroDrop.rot : 0, beats: heroBeats
+        });
+      }
+
+      glass();
+
+      // what leaves through the cracks
+      if (bottleA > .01) {
+        for (let i = 0; i < 22; i++) {
+          const ci = i % 3, ck = CRACKS[ci];
+          const q = seg(T, ck.t + .1 + rnd(i * 3.7) * .5, ck.t + 1.5 + rnd(i * 2.1) * .8);
+          if (q <= 0 || q >= 1) continue;
+          const s1 = rnd(i * 5.3 + 1), s2 = rnd(i * 1.7 + 6);
+          const X = ck.from[0] + ck.side * eo(q) * (110 + s1 * 210);
+          const Y = ck.from[1] + Math.sin(q * 3.1 + s2 * 6) * 60 - eo(q) * 190 * (.4 + s2 * .8);
+          const L = 8 + s1 * 15, ang = s2 * 6.28 + q * 2.4;
+          ctx.strokeStyle = ink(.6 * (1 - q) * bottleA);
+          ctx.beginPath();
+          ctx.moveTo(X - Math.cos(ang) * L, Y - Math.sin(ang) * L);
+          ctx.lineTo(X + Math.cos(ang) * L, Y + Math.sin(ang) * L);
+          ctx.stroke();
+        }
+        for (let i = 0; i < ESC.length; i++) {
+          const e = ESC[i], q = seg(T, e.t, e.t + 1.5);
+          if (q <= 0 || q >= 1) continue;
+          const o = CRACKS[e.c].from;
+          sheet({
+            x: o[0] + CRACKS[e.c].side * eo(q) * BW * .95 * e.sp,
+            y: o[1] + ei(q) * BH * .85, seed: i * 6.3 + 51,
+            a: bottleA * (1 - q * .45), reveal: 1, inkA: .28, fold: 1, t: T, rot: e.rot * q
+          });
+        }
+      }
+      ctx.restore();
+
+      // ---- the frame closes while it is held, opens when it is let out ---
+      const squeeze = Math.min(1, seg(T, 1.4, 3.5) * .5 + strain * .5) * (1 - seg(T, 16.2, 17.6));
+      const vg = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * (.22 - .15 * squeeze), w / 2, h / 2, Math.max(w, h) * (.74 - .32 * squeeze));
+      vg.addColorStop(0, "rgba(255,255,255,0)");
+      vg.addColorStop(1, "rgba(255,255,255,.93)");
+      ctx.fillStyle = vg;
+      ctx.fillRect(0, 0, w, h);
+
+      for (let c = 0; c < CAPS.length; c++) {
+        const a0 = CAPS[c][0], a1 = CAPS[c][1], txt = CAPS[c][2], acc = CAPS[c][3];
+        if (T < a0 || T > a1) continue;
+        const ca = Math.min(seg(T, a0, a0 + .24), 1 - seg(T, a1 - .3, a1));
+        let fs = Math.max(11, Math.min(w, h) * .0295), tw = 0, ls = 0;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        for (let k = 0; k < 9; k++) {
+          ctx.font = "600 " + fs + "px Outfit, sans-serif";
+          ls = fs * .16; tw = 0;
+          for (let i = 0; i < txt.length; i++) tw += ctx.measureText(txt[i]).width + ls;
+          tw -= ls;
+          if (tw + fs * 3.4 <= w * .9 || fs <= 11) break;
+          fs *= .91;
+        }
+        const bw = tw + fs * 3.4, bh = fs * 2.9;
+        const cy = h * .875 + (1 - eo(seg(T, a0, a0 + .32))) * fs * .9;
+        ctx.globalAlpha = ca;
+        ctx.fillStyle = "#0A0A0A";
+        ctx.fillRect(w / 2 - bw / 2, cy - bh / 2, bw, bh);
+        if (acc) {
+          ctx.fillStyle = "#FF5757";
+          ctx.fillRect(w / 2 - bw / 2, cy - bh / 2, fs * .38, bh);
+        }
+        ctx.fillStyle = "#FFFFFF";
+        let tx = w / 2 - tw / 2;
+        for (let i = 0; i < txt.length; i++) {
+          ctx.fillText(txt[i], tx, cy + 1);
+          tx += ctx.measureText(txt[i]).width + ls;
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      for (let i = 0; i < 190; i++) {
+        const r1 = rnd(gt * 3.1 + i), r2 = rnd(gt * 1.7 + i * 2.3);
+        ctx.fillStyle = "rgba(10,10,10," + (.02 + r1 * .045).toFixed(3) + ")";
+        ctx.fillRect(r1 * w, r2 * h, 1.4, 1.4);
+      }
+    };
+    draw(performance.now());
+    this._atimer = setInterval(() => draw(performance.now()), 40);
+  }
+  componentWillUnmount() {
+    if (this._bootT) clearTimeout(this._bootT);
+    if (this._vis) {
+      document.removeEventListener("visibilitychange", this._vis);
+      window.removeEventListener("load", this._vis);
+    }
+    if (this._watch) clearInterval(this._watch);
+    if (this._atimer) clearInterval(this._atimer);
+    if (this._aro) this._aro.disconnect();
+    if (this._timer) clearInterval(this._timer);
+    if (this._boot) cancelAnimationFrame(this._boot);
+    if (this._ro) this._ro.disconnect();
+    window.removeEventListener("mousemove", this._move);
+    window.removeEventListener("scroll", this._scroll);
+    if (this._io) this._io.disconnect();
+  }
+  renderVals() {
+    return {
+      headlineLines: [["PSYCHOLOGY", "#38B6FF"], ["MAGAZINE", "#FF5757"]].map((word, w) => ({
+        hoverColor: word[1],
+        letters: word[0].split("").map((ch, i) => ({
+          ch,
+          hoverColor: word[1],
+          base: i < 3 ? word[1] : "#0A0A0A",
+          stroke: i < 3 ? "2px #0A0A0A" : "0",
+          delay: (0.18 + w * 0.26 + i * 0.045).toFixed(3) + "s"
+        }))
+      })),
+      animName: this.state.animAlt ? "psyletter2" : "psyletter",
+      letterOn: e => { e.currentTarget.style.color = e.currentTarget.dataset.hue; },
+      letterOff: e => { e.currentTarget.style.color = e.currentTarget.dataset.base; },
+      chitsLoop: (() => {
+        const src = [
+          ["i failed the jee mock by 40 marks. papa has already told the whole colony i'm going to be an engineer.", ""],
+          ["they married me at nineteen and everyone said i was lucky. in this house there is no word for what happens at night, and no word for no.", ""],
+          ["he hit me in the auto and bought me a coffee after and i said thank you. i am seventeen and i already know how to make it look like nothing happened.", ""],
+          ["a man waits outside my coaching every evening and knows my name and my timings. i changed my route on monday and by wednesday he had changed his.", ""],
+          ["i sent the photos because he said he'd leave. he left anyway. i have not slept properly since february.", ""],
+          ["result comes friday. i have already decided what i will do if it is bad, because what they will do is worse.", ""],
+          ["twenty-two years married. my daughter is old enough to be married off now and i still cannot find the words to warn her that no is something you are allowed to say in your own bedroom.", ""],
+          ["i still text him every night and it says delivered. on tuesday it said typing for eleven seconds. i have not shown that screen to anyone.", ""],
+          ["i wake at 3:40 every night and he is standing in the doorway. in the morning everyone swears the door was bolted from inside. i have started sleeping with the light on and it does not help.", ""],
+          ["i was thirteen. he was twenty-two, my brother's best friend, and he locked the door and told me it was my fault. he still comes for every rakhi and everyone says how well he has turned out.", ""],
+          ["i love her and my family would rather bury me than meet her. i practise saying it to the mirror and stop at 'ma'.", ""],
+          ["i know which uncle it was and i have the proof on a pen drive taped under my desk. i am counting down to eighteen and the day i walk out of this house.", ""]
+        ];
+        const base = src.map((c, i) => ({
+          text: c[0],
+          hue: i % 2 ? "#FF5757" : "#38B6FF"
+        }));
+        return base.concat(base.map(c => ({ ...c })));
+      })(),
+      headerStyle: {
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 120,
+        padding: "20px 24px", display: "flex", alignItems: "flex-start",
+        justifyContent: "flex-end", gap: "24px",
+        background: "transparent",
+        transform: this.state.headerHidden ? "translateY(-130%)" : "translateY(0)",
+        opacity: this.state.headerHidden ? 0 : 1,
+        pointerEvents: this.state.headerHidden ? "none" : "auto",
+        transition: "transform .45s cubic-bezier(.22,1,.36,1),opacity .3s ease,background .25s ease,border-color .25s ease"
+      },
+      menuOpen: this.state.menuOpen,
+      openMenu: () => this.setState({ menuOpen: true }),
+      closeMenu: () => this.setState({ menuOpen: false }),
+      toTop: () => window.scrollTo({ top: 0, behavior: "smooth" }),
+      toLostLetters: () => {
+        const el = document.getElementById("lost-letters");
+        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 20, behavior: "smooth" });
+      },
+
+      menuLeft: [
+        "research", "mental-health policy", "studies & replication",
+        "deep dives", "opinion", "long reads", "personal essays"
+      ],
+      menuRight: [
+        "psychology news", "culture", "social issues",
+        "human archive", "write anonymously", "about us", "contact"
+      ],
+      socials: (() => { const ICONS = {"instagram":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228%201.3877-.6652.6677-1.075%201.3368-1.3802%202.127-.2954.7638-.4956%201.6365-.552%202.914-.0564%201.2775-.0689%201.6882-.0626%204.947.0062%203.2586.0206%203.6671.0825%204.9473.061%201.2765.264%202.1482.5635%202.9107.308.7889.72%201.4573%201.388%202.1228.6679.6655%201.3365%201.0743%202.1285%201.38.7632.295%201.6361.4961%202.9134.552%201.2773.056%201.6884.069%204.9462.0627%203.2578-.0062%203.668-.0207%204.9478-.0814%201.28-.0607%202.147-.2652%202.9098-.5633.7889-.3086%201.4578-.72%202.1228-1.3881.665-.6682%201.0745-1.3378%201.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982%201.33%2020.628.9208%2019.8378.6165%2019.074.321%2018.2017.1197%2016.9244.0645%2015.6471.0093%2015.236-.005%2011.977.0014%208.718.0076%208.31.0215%207.0301.0839m.1402%2021.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814%201.3783-.9003.423-.1651%201.0575-.3614%202.227-.4171%201.2655-.06%201.6447-.072%204.848-.079%203.2033-.007%203.5835.005%204.8495.0608%201.169.0508%201.8053.2445%202.228.408.5608.216.96.4754%201.3816.895.4217.4194.6816.8176.9005%201.3787.1653.4217.3617%201.056.4169%202.2263.0602%201.2655.0739%201.645.0796%204.848.0058%203.203-.0055%203.5834-.061%204.848-.051%201.17-.245%201.8055-.408%202.2294-.216.5604-.4763.96-.8954%201.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953%205.5864A1.44%201.44%200%201%200%2018.39%204.144a1.44%201.44%200%200%200-1.437%201.4424M5.8385%2012.012c.0067%203.4032%202.7706%206.1557%206.173%206.1493%203.4026-.0065%206.157-2.7701%206.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156%202.771-6.1496%206.1738M8%2012.0077a4%204%200%201%201%204.008%203.9921A3.9996%203.9996%200%200%201%208%2012.0077%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E","discord":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M20.317%204.3698a19.7913%2019.7913%200%2000-4.8851-1.5152.0741.0741%200%2000-.0785.0371c-.211.3753-.4447.8648-.6083%201.2495-1.8447-.2762-3.68-.2762-5.4868%200-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077%200%2000-.0785-.037%2019.7363%2019.7363%200%2000-4.8852%201.515.0699.0699%200%2000-.0321.0277C.5334%209.0458-.319%2013.5799.0992%2018.0578a.0824.0824%200%2000.0312.0561c2.0528%201.5076%204.0413%202.4228%205.9929%203.0294a.0777.0777%200%2000.0842-.0276c.4616-.6304.8731-1.2952%201.226-1.9942a.076.076%200%2000-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077%200%2001-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743%200%2001.0776-.0105c3.9278%201.7933%208.18%201.7933%2012.0614%200a.0739.0739%200%2001.0785.0095c.1202.099.246.1981.3728.2924a.077.077%200%2001-.0066.1276%2012.2986%2012.2986%200%2001-1.873.8914.0766.0766%200%2000-.0407.1067c.3604.698.7719%201.3628%201.225%201.9932a.076.076%200%2000.0842.0286c1.961-.6067%203.9495-1.5219%206.0023-3.0294a.077.077%200%2000.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061%200%2000-.0312-.0286zM8.02%2015.3312c-1.1825%200-2.1569-1.0857-2.1569-2.419%200-1.3332.9555-2.4189%202.157-2.4189%201.2108%200%202.1757%201.0952%202.1568%202.419%200%201.3332-.9555%202.4189-2.1569%202.4189zm7.9748%200c-1.1825%200-2.1569-1.0857-2.1569-2.419%200-1.3332.9554-2.4189%202.1569-2.4189%201.2108%200%202.1757%201.0952%202.1568%202.419%200%201.3332-.946%202.4189-2.1568%202.4189Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E","reddit":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M12%200C5.373%200%200%205.373%200%2012c0%203.314%201.343%206.314%203.515%208.485l-2.286%202.286C.775%2023.225%201.097%2024%201.738%2024H12c6.627%200%2012-5.373%2012-12S18.627%200%2012%200Zm4.388%203.199c1.104%200%201.999.895%201.999%201.999%200%201.105-.895%202-1.999%202-.946%200-1.739-.657-1.947-1.539v.002c-1.147.162-2.032%201.15-2.032%202.341v.007c1.776.067%203.4.567%204.686%201.363.473-.363%201.064-.58%201.707-.58%201.547%200%202.802%201.254%202.802%202.802%200%201.117-.655%202.081-1.601%202.531-.088%203.256-3.637%205.876-7.997%205.876-4.361%200-7.905-2.617-7.998-5.87-.954-.447-1.614-1.415-1.614-2.538%200-1.548%201.255-2.802%202.803-2.802.645%200%201.239.218%201.712.585%201.275-.79%202.881-1.291%204.64-1.365v-.01c0-1.663%201.263-3.034%202.88-3.207.188-.911.993-1.595%201.959-1.595Zm-8.085%208.376c-.784%200-1.459.78-1.506%201.797-.047%201.016.64%201.429%201.426%201.429.786%200%201.371-.369%201.418-1.385.047-1.017-.553-1.841-1.338-1.841Zm7.406%200c-.786%200-1.385.824-1.338%201.841.047%201.017.634%201.385%201.418%201.385.785%200%201.473-.413%201.426-1.429-.046-1.017-.721-1.797-1.506-1.797Zm-3.703%204.013c-.974%200-1.907.048-2.77.135-.147.015-.241.168-.183.305.483%201.154%201.622%201.964%202.953%201.964%201.33%200%202.47-.81%202.953-1.964.057-.137-.037-.29-.184-.305-.863-.087-1.795-.135-2.769-.135Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E","facebook":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M9.101%2023.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085%201.848-5.978%205.858-5.978.401%200%20.955.042%201.468.103a8.68%208.68%200%200%201%201.141.195v3.325a8.623%208.623%200%200%200-.653-.036%2026.805%2026.805%200%200%200-.733-.009c-.707%200-1.259.096-1.675.309a1.686%201.686%200%200%200-.679.622c-.258.42-.374.995-.374%201.752v1.297h3.919l-.386%202.103-.287%201.564h-3.246v8.245C19.396%2023.238%2024%2018.179%2024%2012.044c0-6.627-5.373-12-12-12s-12%205.373-12%2012c0%205.628%203.874%2010.35%209.101%2011.647Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E","twitter":"data:image/svg+xml,%3Csvg%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M14.234%2010.162%2022.977%200h-2.072l-7.591%208.824L7.251%200H.258l9.168%2013.343L.258%2024H2.33l8.016-9.318L16.749%2024h6.993zm-2.837%203.299-.929-1.329L3.076%201.56h3.182l5.965%208.532.929%201.329%207.754%2011.09h-3.182z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E","youtube":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M23.498%206.186a3.016%203.016%200%200%200-2.122-2.136C19.505%203.545%2012%203.545%2012%203.545s-7.505%200-9.377.505A3.017%203.017%200%200%200%20.502%206.186C0%208.07%200%2012%200%2012s0%203.93.502%205.814a3.016%203.016%200%200%200%202.122%202.136c1.871.505%209.376.505%209.376.505s7.505%200%209.377-.505a3.015%203.015%200%200%200%202.122-2.136C24%2015.93%2024%2012%2024%2012s0-3.93-.502-5.814zM9.545%2015.568V8.432L15.818%2012l-6.273%203.568z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E"}; return [
+        ["instagram", "https://instagram.com/readpsymag"],
+        ["facebook", "https://facebook.com/readpsymag"],
+        ["twitter", "https://x.com/readpsymag"],
+        ["youtube", "https://youtube.com/@readpsymag"],
+        ["discord", "https://discord.gg/readpsymag"],
+        ["reddit", "https://reddit.com/user/readpsymag"]
+      ].map(s => ({
+        lower: s[0], url: s[1],
+        iconEl: React.createElement("img", {
+          src: ICONS[s[0]], alt: s[0],
+          style: { width: "17px", height: "17px", display: "block", opacity: .85 }
+        })
+      })); })(),
+      legal: ["terms of use", "privacy", "cookie policy", "editorial standards"]
+    };
+  }
+}
+
+</script>
+</body>
+</html>
