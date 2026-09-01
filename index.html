@@ -22,6 +22,24 @@ input,textarea,button{font-family:inherit}
 @keyframes psymarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes psyletter{from{transform:translateY(105%)}to{transform:translateY(0)}}
 @keyframes psyletter2{from{transform:translateY(105%)}to{transform:translateY(0)}}
+
+@media (max-width:760px){
+  [data-hero]{padding:64px 20px 18px !important}
+  [data-hero] h1 span span span span{font-size:clamp(34px,11.2vw,66px) !important}
+  [data-filmwrap]{height:min(46vh,330px) !important;margin-top:14px !important}
+  [data-archhead]{padding:0 20px 34px !important;gap:12px !important}
+  [data-archhead] h2{font-size:clamp(32px,10vw,54px) !important}
+  [data-archhead] span{font-size:16px !important}
+  [data-chit]{width:78vw !important;min-height:0 !important}
+  [data-chit] > div:last-child{padding:22px 20px 26px !important}
+  [data-chit] span{font-size:16px !important}
+  [data-socialrow]{gap:14px !important;padding:48px 20px 0 !important}
+  [data-socialrow] a{width:50px !important;height:50px !important}
+  [data-helprow]{gap:14px !important;padding:26px 20px 0 !important;flex-direction:column !important}
+  [data-helprow] > span{font-size:14px !important;text-align:center !important}
+  #lost-letters{padding:24px 0 80px !important}
+  #psydot{display:none !important}
+}
 </style>
 </helmet>
 
@@ -31,37 +49,11 @@ input,textarea,button{font-family:inherit}
 
 
 
-<header style="{{ headerStyle }}">
-  
-</header>
 
-<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed;inset:0;z-index:150;background:#0A0A0A;padding:40px;display:flex;flex-direction:column;animation:psyfade .28s ease-out">
-    <div style="display:flex;justify-content:flex-end">
-      <div onClick="{{ closeMenu }}" style="cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font:200 40px/1 Outfit,sans-serif;color:#FFFFFF;transition:color .2s" style-hover="color:#FF5757">×</div>
-    </div>
-    <div style="flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:60px;align-content:center;padding:0 60px;max-width:1600px;margin:0 auto;width:100%">
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <span style="font:600 clamp(30px,3.4vw,52px)/1.25 Outfit,sans-serif;letter-spacing:-.02em;color:#FFFFFF;padding-bottom:14px">sections</span>
-        <sc-for list="{{ menuLeft }}" as="m" hint-placeholder-count="7">
-          <span onClick="{{ closeMenu }}" style="cursor:pointer;font:300 clamp(18px,1.5vw,25px)/1.85 Outfit,sans-serif;color:#FFFFFF;transition:color .18s,padding-left .18s" style-hover="color:#38B6FF;padding-left:10px">{{ m }}</span>
-        </sc-for>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <sc-for list="{{ menuRight }}" as="m" hint-placeholder-count="6">
-          <span onClick="{{ closeMenu }}" style="cursor:pointer;font:600 clamp(28px,3.2vw,50px)/1.2 Outfit,sans-serif;letter-spacing:-.02em;color:#FFFFFF;transition:color .18s,padding-left .2s" style-hover="color:#FF5757;padding-left:14px">{{ m }}</span>
-        </sc-for>
-      </div>
-    </div>
-    <div style="border-top:1px solid rgba(255,255,255,.28);padding-top:26px;display:flex;align-items:center;justify-content:center;gap:44px;flex-wrap:wrap">
-      <sc-for list="{{ socials }}" as="s" hint-placeholder-count="6">
-        <a href="{{ s.url }}" target="_blank" style="font:300 17px/1 Outfit,sans-serif;color:#FFFFFF;transition:color .18s" style-hover="color:#38B6FF">{{ s.lower }}</a>
-      </sc-for>
-    </div>
-  </div>
-</sc-if>
 
-<section style="padding:100px 40px 30px;display:flex;flex-direction:column;justify-content:flex-start;max-width:1600px;margin:0 auto">
+
+
+<section data-hero="" style="padding:100px 40px 30px;display:flex;flex-direction:column;justify-content:flex-start;max-width:1600px;margin:0 auto">
   <h1 style="margin:0;display:flex;flex-direction:column;align-items:center;gap:0">
     <sc-for list="{{ headlineLines }}" as="line" hint-placeholder-count="2">
       <span style="display:flex;flex-wrap:nowrap;padding-bottom:.12em;width:fit-content;max-width:100%;color:#0A0A0A;cursor:default">
@@ -76,7 +68,7 @@ input,textarea,button{font-family:inherit}
     </sc-for>
   </h1>
 
-  <div style="position:relative;margin-top:6px;height:clamp(320px,46vh,540px);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%)">
+  <div data-filmwrap="" style="position:relative;margin-top:6px;height:clamp(320px,46vh,540px);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%)">
     <canvas id="psyfilm" style="position:absolute;inset:0;width:100%;height:100%;display:block"></canvas>
   </div>
 
@@ -84,14 +76,14 @@ input,textarea,button{font-family:inherit}
 
 <section id="lost-letters" style="padding:40px 0 120px">
   <div id="psydot" style="position: fixed; top: -8px; left: -10px; width: 14px; height: 14px; border-radius: 50%; background: #0A0A0A; z-index: 200; pointer-events: none; opacity: 0; transition: opacity .3s; will-change: transform; transform: translate(-20px,-20px)"></div>
-  <div style="max-width:1600px;margin:0 auto;padding:0 40px 52px;display:flex;flex-direction:column;gap:16px">
+  <div data-archhead="" style="max-width:1600px;margin:0 auto;padding:0 40px 52px;display:flex;flex-direction:column;gap:16px">
     <h2 style="margin:0;font:600 clamp(34px,5.4vw,86px)/.94 Outfit,sans-serif;letter-spacing:-.045em;color:#0A0A0A">human archive</h2>
-    <span style="font:300 clamp(17px,1.35vw,21px)/1.6 Outfit,sans-serif;color:#2A2A2A;max-width:52ch;text-wrap:pretty">notes people wrote and never sent, kept exactly as they arrived. some of these are hard to read. that is the point.</span>
+    <span style="font:300 clamp(17px,1.35vw,21px)/1.6 Outfit,sans-serif;color:#2A2A2A;max-width:52ch;text-wrap:pretty">notes people wrote and never sent, kept exactly as they arrived.</span>
   </div>
   <div style="overflow:hidden;padding:26px 0">
     <div style="display:flex;width:max-content;gap:26px;animation:psymarquee 62s linear infinite">
       <sc-for list="{{ chitsLoop }}" as="c" hint-placeholder-count="8">
-        <div style="width:372px;flex:none;background:#FFFFFF;border:1.5px solid #0A0A0A;min-height:250px;display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease" style-hover="transform:translateY(-10px);box-shadow:10px 10px 0 0 #0A0A0A">
+        <div data-chit="" style="width:372px;flex:none;background:#FFFFFF;border:1.5px solid #0A0A0A;min-height:250px;display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease" style-hover="transform:translateY(-10px);box-shadow:10px 10px 0 0 #0A0A0A">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:#0A0A0A;padding:11px 18px">
             <span style="font:600 12px/1 Outfit,sans-serif;letter-spacing:.16em;color:#FFFFFF">anonymous</span>
             <span style="display:block;width:9px;height:9px;background:{{ c.hue }}"></span>
@@ -104,11 +96,11 @@ input,textarea,button{font-family:inherit}
     </div>
   </div>
 
-  <div style="position:relative;margin-top:96px;height:clamp(340px,52vh,560px);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%)">
+  <div data-filmwrap="" style="position:relative;margin-top:96px;height:clamp(340px,52vh,560px);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%)">
     <canvas id="psyarchive" style="position:absolute;inset:0;width:100%;height:100%;display:block"></canvas>
   </div>
 
-  <div style="display:flex;justify-content:center;align-items:center;gap:20px;padding:70px 40px 0;flex-wrap:wrap">
+  <div data-socialrow="" style="display:flex;justify-content:center;align-items:center;gap:20px;padding:70px 40px 0;flex-wrap:wrap">
     <a href="https://instagram.com/readpsymag" target="_blank" rel="noopener" aria-label="Instagram" style="width:58px;height:58px;border-radius:50%;border:1.5px solid #0A0A0A;background:#FFFFFF;color:#0A0A0A;display:flex;align-items:center;justify-content:center;transition:background .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1)" style-hover="background:#38B6FF;color:#FFFFFF;transform:translateY(-4px)">
       <span style="width:24px;height:24px;display:block;background:currentColor;-webkit-mask:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228%201.3877-.6652.6677-1.075%201.3368-1.3802%202.127-.2954.7638-.4956%201.6365-.552%202.914-.0564%201.2775-.0689%201.6882-.0626%204.947.0062%203.2586.0206%203.6671.0825%204.9473.061%201.2765.264%202.1482.5635%202.9107.308.7889.72%201.4573%201.388%202.1228.6679.6655%201.3365%201.0743%202.1285%201.38.7632.295%201.6361.4961%202.9134.552%201.2773.056%201.6884.069%204.9462.0627%203.2578-.0062%203.668-.0207%204.9478-.0814%201.28-.0607%202.147-.2652%202.9098-.5633.7889-.3086%201.4578-.72%202.1228-1.3881.665-.6682%201.0745-1.3378%201.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982%201.33%2020.628.9208%2019.8378.6165%2019.074.321%2018.2017.1197%2016.9244.0645%2015.6471.0093%2015.236-.005%2011.977.0014%208.718.0076%208.31.0215%207.0301.0839m.1402%2021.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814%201.3783-.9003.423-.1651%201.0575-.3614%202.227-.4171%201.2655-.06%201.6447-.072%204.848-.079%203.2033-.007%203.5835.005%204.8495.0608%201.169.0508%201.8053.2445%202.228.408.5608.216.96.4754%201.3816.895.4217.4194.6816.8176.9005%201.3787.1653.4217.3617%201.056.4169%202.2263.0602%201.2655.0739%201.645.0796%204.848.0058%203.203-.0055%203.5834-.061%204.848-.051%201.17-.245%201.8055-.408%202.2294-.216.5604-.4763.96-.8954%201.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953%205.5864A1.44%201.44%200%201%200%2018.39%204.144a1.44%201.44%200%200%200-1.437%201.4424M5.8385%2012.012c.0067%203.4032%202.7706%206.1557%206.173%206.1493%203.4026-.0065%206.157-2.7701%206.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156%202.771-6.1496%206.1738M8%2012.0077a4%204%200%201%201%204.008%203.9921A3.9996%203.9996%200%200%201%208%2012.0077%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat;mask:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228%201.3877-.6652.6677-1.075%201.3368-1.3802%202.127-.2954.7638-.4956%201.6365-.552%202.914-.0564%201.2775-.0689%201.6882-.0626%204.947.0062%203.2586.0206%203.6671.0825%204.9473.061%201.2765.264%202.1482.5635%202.9107.308.7889.72%201.4573%201.388%202.1228.6679.6655%201.3365%201.0743%202.1285%201.38.7632.295%201.6361.4961%202.9134.552%201.2773.056%201.6884.069%204.9462.0627%203.2578-.0062%203.668-.0207%204.9478-.0814%201.28-.0607%202.147-.2652%202.9098-.5633.7889-.3086%201.4578-.72%202.1228-1.3881.665-.6682%201.0745-1.3378%201.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982%201.33%2020.628.9208%2019.8378.6165%2019.074.321%2018.2017.1197%2016.9244.0645%2015.6471.0093%2015.236-.005%2011.977.0014%208.718.0076%208.31.0215%207.0301.0839m.1402%2021.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814%201.3783-.9003.423-.1651%201.0575-.3614%202.227-.4171%201.2655-.06%201.6447-.072%204.848-.079%203.2033-.007%203.5835.005%204.8495.0608%201.169.0508%201.8053.2445%202.228.408.5608.216.96.4754%201.3816.895.4217.4194.6816.8176.9005%201.3787.1653.4217.3617%201.056.4169%202.2263.0602%201.2655.0739%201.645.0796%204.848.0058%203.203-.0055%203.5834-.061%204.848-.051%201.17-.245%201.8055-.408%202.2294-.216.5604-.4763.96-.8954%201.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953%205.5864A1.44%201.44%200%201%200%2018.39%204.144a1.44%201.44%200%200%200-1.437%201.4424M5.8385%2012.012c.0067%203.4032%202.7706%206.1557%206.173%206.1493%203.4026-.0065%206.157-2.7701%206.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156%202.771-6.1496%206.1738M8%2012.0077a4%204%200%201%201%204.008%203.9921A3.9996%203.9996%200%200%201%208%2012.0077%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat"></span>
     </a>
@@ -123,6 +115,13 @@ input,textarea,button{font-family:inherit}
     </a>
     <a href="https://x.com/readpsymag" target="_blank" rel="noopener" aria-label="X" style="width:58px;height:58px;border-radius:50%;border:1.5px solid #0A0A0A;background:#FFFFFF;color:#0A0A0A;display:flex;align-items:center;justify-content:center;transition:background .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1)" style-hover="background:#38B6FF;color:#FFFFFF;transform:translateY(-4px)">
       <span style="width:21px;height:21px;display:block;background:currentColor;-webkit-mask:url('data:image/svg+xml,%3Csvg%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M14.234%2010.162%2022.977%200h-2.072l-7.591%208.824L7.251%200H.258l9.168%2013.343L.258%2024H2.33l8.016-9.318L16.749%2024h6.993zm-2.837%203.299-.929-1.329L3.076%201.56h3.182l5.965%208.532.929%201.329%207.754%2011.09h-3.182z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat;mask:url('data:image/svg+xml,%3Csvg%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M14.234%2010.162%2022.977%200h-2.072l-7.591%208.824L7.251%200H.258l9.168%2013.343L.258%2024H2.33l8.016-9.318L16.749%2024h6.993zm-2.837%203.299-.929-1.329L3.076%201.56h3.182l5.965%208.532.929%201.329%207.754%2011.09h-3.182z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat"></span>
+    </a>
+  </div>
+
+  <div data-helprow="" style="display:flex;justify-content:center;align-items:center;gap:18px;padding:30px 40px 0;flex-wrap:wrap">
+    <span style="font:600 clamp(15px,1.15vw,18px)/1.5 Outfit,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#0A0A0A;text-wrap:pretty">Need help? <span style="color:#38B6FF">Talk to a Psychologist</span></span>
+    <a href="https://wa.me/919695227999" target="_blank" rel="noopener" aria-label="WhatsApp" style="width:52px;height:52px;border-radius:50%;border:1.5px solid #0A0A0A;background:#FFFFFF;color:#0A0A0A;display:flex;align-items:center;justify-content:center;transition:background .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1)" style-hover="background:#38B6FF;color:#FFFFFF;transform:translateY(-4px)">
+      <span style="width:23px;height:23px;display:block;background:currentColor;-webkit-mask:url('data:image/svg+xml,%3Csvg%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M17.472%2014.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94%201.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198%200-.52.074-.792.372-.272.297-1.04%201.016-1.04%202.479%200%201.462%201.065%202.875%201.213%203.074.149.198%202.096%203.2%205.077%204.487.709.306%201.262.489%201.694.625.712.227%201.36.195%201.871.118.571-.085%201.758-.719%202.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421%207.403h-.004a9.87%209.87%200%2001-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86%209.86%200%2001-1.51-5.26c.001-5.45%204.436-9.884%209.888-9.884%202.64%200%205.122%201.03%206.988%202.898a9.825%209.825%200%20012.893%206.994c-.003%205.45-4.437%209.884-9.885%209.884m8.413-18.297A11.815%2011.815%200%200012.05%200C5.495%200%20.16%205.335.157%2011.892c0%202.096.547%204.142%201.588%205.945L.057%2024l6.305-1.654a11.882%2011.882%200%20005.683%201.448h.005c6.554%200%2011.89-5.335%2011.893-11.893a11.821%2011.821%200%2000-3.48-8.413Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat;mask:url('data:image/svg+xml,%3Csvg%20role%3D%22img%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22%230A0A0A%22%3E%3Cpath%20d%3D%22M17.472%2014.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94%201.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198%200-.52.074-.792.372-.272.297-1.04%201.016-1.04%202.479%200%201.462%201.065%202.875%201.213%203.074.149.198%202.096%203.2%205.077%204.487.709.306%201.262.489%201.694.625.712.227%201.36.195%201.871.118.571-.085%201.758-.719%202.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421%207.403h-.004a9.87%209.87%200%2001-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86%209.86%200%2001-1.51-5.26c.001-5.45%204.436-9.884%209.888-9.884%202.64%200%205.122%201.03%206.988%202.898a9.825%209.825%200%20012.893%206.994c-.003%205.45-4.437%209.884-9.885%209.884m8.413-18.297A11.815%2011.815%200%200012.05%200C5.495%200%20.16%205.335.157%2011.892c0%202.096.547%204.142%201.588%205.945L.057%2024l6.305-1.654a11.882%2011.882%200%20005.683%201.448h.005c6.554%200%2011.89-5.335%2011.893-11.893a11.821%2011.821%200%2000-3.48-8.413Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E') center/contain no-repeat"></span>
     </a>
   </div>
 </section>
