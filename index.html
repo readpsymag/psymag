@@ -25,14 +25,14 @@ input,textarea,button{font-family:inherit}
 
 @media (hover:hover) and (pointer:fine){
   [data-chit]:hover{transform:translateY(-10px);box-shadow:10px 10px 0 0 #0A0A0A}
-  a[data-helpbtn]:hover{background:#38B6FF;transform:translateY(-10px);box-shadow:10px 10px 0 0 #0A0A0A}
+  a[data-helpbtn]:hover{background:#38B6FF !important;border-color:#38B6FF;transform:translateY(-10px);box-shadow:10px 10px 0 0 #0A0A0A}
   a[data-helpbtn]:hover span:first-child{background:#38B6FF !important}
-  a[data-socialbtn]:hover{background:#38B6FF;color:#FFFFFF;transform:translateY(-4px)}
+  a[data-socialbtn]:hover{background:#38B6FF !important;color:#FFFFFF !important;transform:translateY(-4px)}
 }
 [data-chit]:active{transform:translateY(-6px);box-shadow:6px 6px 0 0 #0A0A0A}
-a[data-helpbtn]:active{background:#38B6FF;transform:translateY(-6px);box-shadow:6px 6px 0 0 #0A0A0A}
+a[data-helpbtn]:active{background:#38B6FF !important;transform:translateY(-6px);box-shadow:6px 6px 0 0 #0A0A0A}
 a[data-helpbtn]:active span:first-child{background:#38B6FF !important}
-a[data-socialbtn]:active{background:#38B6FF;color:#FFFFFF;transform:translateY(-4px)}
+a[data-socialbtn]:active{background:#38B6FF !important;color:#FFFFFF !important;transform:translateY(-4px)}
 
 @media (max-width:760px){
   [data-hero]{padding:64px 20px 18px !important}
@@ -1176,5 +1176,6 @@ class Component extends DCLogic {
 }
 
 </script>
+<script>document.addEventListener('touchstart', function(){}, false);</script>
 </body>
 </html>
